@@ -10,5 +10,22 @@ package controller;
  * @author joaob
  */
 public class Controller {
+    private String nomeApp;
+    private String versao;
+
+    public Controller(String nomeApp, String versao) {
+        this.nomeApp = nomeApp;
+        this.versao = versao;
+    }
     
+    public boolean isRegistered(){
+        return false;
+    }
+    
+    public boolean startRegistration(){
+        return false;
+    }
+    
+    public void showLicenseInfo(){
+    }
 }
