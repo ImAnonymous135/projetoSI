@@ -5,13 +5,18 @@
  */
 package controller;
 
+
+import java.io.BufferedReader;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,7 +36,7 @@ public class License {
     private String systemCpuName;
     private String systemCpuId;
     private String systemMac;
-    private String systemBios;
+    private List<String> systemId;
 
     //App Info
     private String appName;
@@ -43,7 +48,8 @@ public class License {
     private String startDate;
     private String expirationDate;
 
-    public License(String userName, String userMail, String userId, String userCertificate, String appName, String appVersion, String fileHash, String librabryFileHash) {
+    public License(/*String userName, String userMail, String userId, String userCertificate, String appName, String appVersion, String fileHash, String librabryFileHash*/) {
+        /*
         this.userName = userName;
         this.userMail = userMail;
         this.userId = userId;
@@ -52,31 +58,83 @@ public class License {
         this.appVersion = appVersion;
         this.fileHash = fileHash;
         this.librabryFileHash = librabryFileHash;
-
-        //auto
-        //this.systemCpuName = ;
-        //this.systemCpuId = ;
+        */
+        
+        this.systemCpuName = getCpuName();
+        this.systemCpuId = System.getenv("PROCESSOR_IDENTIFIER");
         this.systemMac = getMac();
-        //this.systemBios = ;
+        this.systemId = getSystemIdList();
         this.startDate = getDate();
-        this.expirationDate = getExpDate();
+        this.expirationDate = getExpDate(12);
+    }
+    
+    //---------------------------------
+    //Private methods
+    //---------------------------------
+    
+    private List<String> getSystemIdList() {
+        
+        List<String> systemId = new ArrayList<String>();
+        
+        try {
+            Process p = Runtime.getRuntime().exec("cmd /c wmic diskdrive get serialNumber");
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            
+            while ((line = reader.readLine()) != null) {
+                if (line.length() > 1 && !line.contains("SerialNumber")) {
+                    systemId.add(line);
+                }
+            }
+            
+        } catch (IOException ex) {
+            Logger.getLogger(License.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(License.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return systemId;
+    }
+    
+    private String getCpuName() {
+        
+        String cpuName = "";
+        
+        try {
+            Process p = Runtime.getRuntime().exec("cmd /c wmic cpu get name");
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            
+            while ((line = reader.readLine()) != null) {
+                if (line.length() > 1 && (line.contains("AMD") || line.contains("Intel"))) {
+                    cpuName = line;
+                }
+            }
+            
+        } catch (IOException ex) {
+            Logger.getLogger(License.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(License.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return cpuName;
     }
 
     private String getMac() {
 
         try {
             InetAddress ip;
-            
+
             ip = InetAddress.getLocalHost();
             NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-            
+
             byte[] mac = network.getHardwareAddress();
-            
+
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < mac.length; i++) {
                 sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
             }
-            
+
             return sb.toString();
         } catch (UnknownHostException ex) {
             Logger.getLogger(License.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,9 +149,72 @@ public class License {
         return now.toString();
     }
 
-    private String getExpDate() {
+    private String getExpDate(int months) {
         LocalDateTime now = LocalDateTime.now();
-        now.plusYears(1).toString();
+        now.plusMonths(months).toString();
         return now.toString();
     }
+    
+    //---------------------------------
+    //Getters
+    //---------------------------------
+
+    public List<String> getSystemId() {
+        return systemId;
+    }
+    
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getUserMail() {
+        return userMail;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getUserCertificate() {
+        return userCertificate;
+    }
+
+    public String getSystemCpuName() {
+        return systemCpuName;
+    }
+
+    public String getSystemCpuId() {
+        return systemCpuId;
+    }
+
+    public String getSystemMac() {
+        return systemMac;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public String getAppVersion() {
+        return appVersion;
+    }
+
+    public String getFileHash() {
+        return fileHash;
+    }
+
+    public String getLibrabryFileHash() {
+        return librabryFileHash;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public String getExpirationDate() {
+        return expirationDate;
+    }
+
+    
+    
 }
