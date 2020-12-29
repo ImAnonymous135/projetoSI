@@ -5,9 +5,14 @@
  */
 package controller;
 
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,12 +27,27 @@ public class test {
         // TODO code application logic here
 
        License l = new License();
+       Gson gson = new Gson();
        
-        System.out.println(l.getSystemId());
+       String json = gson.toJson(l);
+        System.out.println(json);
+       
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(json.getBytes());
+            String stringHash = new String(messageDigest.digest());
+            System.out.println(stringHash);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+       
         
-        //System.out.println(System.getenv("PROCESSOR_IDENTIFIER"));
-        //System.out.println(System.getenv("PROCESSOR_ARCHITECTURE"));
-        //System.out.println(System.getenv("PROCESSOR_ARCHITEW6432"));
-        //System.out.println(System.getenv("NUMBER_OF_PROCESSORS"));
+        
+        
+        //License l2 = gson.fromJson(json, License.class);
+        
+        //System.out.println(l2.getSystemCpuName());
+        
     }
 }

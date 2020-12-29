@@ -5,7 +5,6 @@
  */
 package controller;
 
-
 import java.io.BufferedReader;
 
 import java.io.IOException;
@@ -36,7 +35,8 @@ public class License {
     private String systemCpuName;
     private String systemCpuId;
     private String systemMac;
-    private List<String> systemId;
+    private String systemOsId;
+    private List<String> systemHardDrivesId;
 
     //App Info
     private String appName;
@@ -58,36 +58,63 @@ public class License {
         this.appVersion = appVersion;
         this.fileHash = fileHash;
         this.librabryFileHash = librabryFileHash;
-        */
-        
+         */
+
         this.systemCpuName = getCpuName();
         this.systemCpuId = System.getenv("PROCESSOR_IDENTIFIER");
         this.systemMac = getMac();
-        this.systemId = getSystemIdList();
-        this.startDate = getDate();
-        this.expirationDate = getExpDate(12);
+        this.systemOsId = getOsSerial();
+        this.systemHardDrivesId = getSystemIdList();
+        //this.startDate = getDate();
+        //this.expirationDate = getExpDate(12);
     }
-    
+
     //---------------------------------
     //Private methods
     //---------------------------------
-    
+    private String getOsSerial() {
+
+        String line = "";
+
+        try {
+            Process p = Runtime.getRuntime().exec("cmd /c vol C:");
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("Serial Number")) {
+                    line = line.replace("Volume Serial Number is ", "");
+                    line = line.trim();
+                    return line;
+                }
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(License.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(License.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return line;
+    }
+
     private List<String> getSystemIdList() {
-        
+
         List<String> systemId = new ArrayList<String>();
-        
+
         try {
             Process p = Runtime.getRuntime().exec("cmd /c wmic diskdrive get serialNumber");
             p.waitFor();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
-            
+
             while ((line = reader.readLine()) != null) {
                 if (line.length() > 1 && !line.contains("SerialNumber")) {
+                    line = line.trim();
                     systemId.add(line);
                 }
             }
-            
+
         } catch (IOException ex) {
             Logger.getLogger(License.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
@@ -95,23 +122,24 @@ public class License {
         }
         return systemId;
     }
-    
+
     private String getCpuName() {
-        
+
         String cpuName = "";
-        
+
         try {
             Process p = Runtime.getRuntime().exec("cmd /c wmic cpu get name");
             p.waitFor();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
-            
+
             while ((line = reader.readLine()) != null) {
                 if (line.length() > 1 && (line.contains("AMD") || line.contains("Intel"))) {
+                    line = line.trim();
                     cpuName = line;
                 }
             }
-            
+
         } catch (IOException ex) {
             Logger.getLogger(License.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
@@ -154,15 +182,18 @@ public class License {
         now.plusMonths(months).toString();
         return now.toString();
     }
-    
+
     //---------------------------------
     //Getters
     //---------------------------------
-
-    public List<String> getSystemId() {
-        return systemId;
+    public String getSystemOsId() {
+        return systemOsId;
     }
-    
+
+    public List<String> getSystemHardDrivesId() {
+        return systemHardDrivesId;
+    }
+
     public String getUserName() {
         return userName;
     }
@@ -215,6 +246,4 @@ public class License {
         return expirationDate;
     }
 
-    
-    
 }
