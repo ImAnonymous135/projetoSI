@@ -10,12 +10,17 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *
  * @author joaob
  */
 public class Controller {
+    License l = new License();
     private String nomeApp;
     private String versao;
     private License license;
@@ -26,7 +31,9 @@ public class Controller {
         this.license = new License();
     }
     
-    public boolean isRegistered(){
+    public boolean isRegistered() throws IOException{
+        Path path = Paths.get(System.getProperty("user.dir") + "/..").toRealPath();
+        new File(path+"/informacao/nomeApp").mkdirs();
         return false;
     }
     
