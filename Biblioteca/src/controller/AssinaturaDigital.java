@@ -18,13 +18,14 @@ import javax.security.auth.callback.CallbackHandler;
  * @author josea
  */
 public class AssinaturaDigital {
+
     public static byte[] sign(String hash) {
         try {
             Provider[] provs = Security.getProviders();
             for (int i = 0; i < provs.length; i++) {
                 System.out.println(i + " - Nome do provider: " + provs[i].getName());
             }
-            
+
             Provider p = provs[provs.length - 1];
             Security.addProvider(p);
             CallbackHandler cmdLineHdlr = new com.sun.security.auth.callback.TextCallbackHandler();

@@ -35,6 +35,7 @@ public class CifraHibrida {
     Simetrica sim = new Simetrica();
     Assimetrica assim = new Assimetrica();
     License l = new License();
+    
     public void encriptar(String path, String publicKey) throws FileNotFoundException, IOException, Exception {
 
         // Secret Key Generation
