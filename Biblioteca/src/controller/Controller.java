@@ -58,9 +58,13 @@ public class Controller {
     //Private methods
     //---------------------------------
     
+<<<<<<< Updated upstream
     
     
     private void jsonEncrypt() {
+=======
+    private void jsonHasht() {
+>>>>>>> Stashed changes
         
         Gson gson = new Gson();
         String json = gson.toJson(license);
