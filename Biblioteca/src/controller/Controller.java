@@ -46,9 +46,15 @@ public class Controller {
     }
     
     
+    public void setMail(String mail){
+        this.license.setUserMail(mail);
+    }
+    
     //---------------------------------
     //Private methods
     //---------------------------------
+    
+    
     
     private void jsonEncrypt() {
         

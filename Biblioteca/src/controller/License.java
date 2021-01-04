@@ -183,6 +183,12 @@ public class License {
         return now.toString();
     }
 
+    public void setUserMail(String userMail) {
+        this.userMail = userMail;
+    }
+    
+    
+
     //---------------------------------
     //Getters
     //---------------------------------
