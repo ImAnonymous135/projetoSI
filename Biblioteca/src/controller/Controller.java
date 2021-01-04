@@ -24,6 +24,8 @@ public class Controller {
     private String nomeApp;
     private String versao;
     private License license;
+    private CifraHibrida c= new CifraHibrida();
+    private AssinaturaDigital a= new AssinaturaDigital();
 
     public Controller(String nomeApp, String versao) {
         this.nomeApp = nomeApp;
@@ -32,17 +34,19 @@ public class Controller {
     }
     
     public boolean isRegistered() throws IOException{
-        Path path = Paths.get(System.getProperty("user.dir") + "/..").toRealPath();
-        new File(path+"/informacao/nomeApp").mkdirs();
         return false;
     }
     
-    public boolean startRegistration(){
-        
+    public boolean startRegistration() throws Exception {
+        Gson gson = new Gson();
+        String json = gson.toJson(license);
+        c.encriptar(json, "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgFGVfrY4jQSoZQWWygZ83roKXWD4YeT2x2p41dGkPixe73rT2IW04glagN2vgoZoHuOPqa5and6kAmK2ujmCHu6D1auJhE2tXP+yLkpSiYMQucDKmCsWMnW9XlC5K7OSL77TXXcfvTvyZcjObEz6LIBRzs6+FqpFbUO9SJEfh6wIDAQAB");
+        a.sign(json);
         return false;
     }
     
     public void showLicenseInfo(){
+        
     }
     
     

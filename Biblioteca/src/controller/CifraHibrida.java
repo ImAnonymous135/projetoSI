@@ -36,7 +36,7 @@ public class CifraHibrida {
     Assimetrica assim = new Assimetrica();
     License l = new License();
     
-    public void encriptar(String path, String publicKey) throws FileNotFoundException, IOException, Exception {
+    public void encriptar(String texto, String publicKey) throws FileNotFoundException, IOException, Exception {
 
         // Secret Key Generation
         KeyGenerator keyGenerator;
@@ -44,16 +44,13 @@ public class CifraHibrida {
         File encryptedFile = null;
 
         try {
-            File file = new File(path);
             SecretKey secretKey = sim.generateKey();
             byte[] secretkeyByte = secretKey.getEncoded();
             /*System.out.println("Secret Key:");
             System.out.println(Arrays.toString(secretkeyByte));*/
 
             // Ler conteúdo
-            FileInputStream fis = new FileInputStream(path);
-            byte[] contentBytes = new byte[(int) new File(path).length()];
-            fis.read(contentBytes);
+            byte[] contentBytes = texto.getBytes();
 
             //encripttar texto em claro
             byte[] encDataBytes = Simetrica.encriptar(secretKey, contentBytes);
@@ -83,7 +80,7 @@ public class CifraHibrida {
             sb.append(encSecretkeyString).append(System.lineSeparator()).append(encDataString);
 
             // Criação do ficheiro
-            String encFilePath = file.getPath().concat(".enc");
+            String encFilePath = "CifraHibrida";
             encryptedFile = new File(encFilePath);
             FileWriter writer;
             writer = new FileWriter(encryptedFile);
