@@ -16,7 +16,7 @@ import java.util.Scanner;
  */
 public class aplicacao {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, Exception {
         Scanner sc = new Scanner(System.in);
         System.out.println("Hello");
 

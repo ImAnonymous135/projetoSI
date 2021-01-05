@@ -59,7 +59,7 @@ public class CifraHibrida {
             System.out.println(Arrays.toString(encDataBytes));*/
 
             //Encriptar chave
-            byte[] encSecretkey = Assimetrica.decriptar(secretkeyByte, publicKey);
+            byte[] encSecretkey = Assimetrica.encriptar(secretkeyByte, publicKey);
             /*System.out.println("\n@Encrypted Secret Key : ");
             System.out.println(Arrays.toString(encSecretkey));*/
 
