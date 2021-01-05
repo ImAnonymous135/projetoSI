@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller;
+package service.encryptions;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -25,6 +25,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import service.License;
 
 /**
  *
@@ -98,7 +99,7 @@ public class CifraHibrida {
 
     }
 
-    public static File decriptar(String path, String pvtKey) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, Exception {
+    public String decriptar(String path, String pvtKey) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, Exception {
         File inFile = new File(path);
         String[] contents = extractDataElements(inFile);
 
@@ -118,14 +119,7 @@ public class CifraHibrida {
         System.out.println(Arrays.toString(messageByte));*/
         contents[1] = new String(messageByte, StandardCharsets.UTF_8);
 
-        //criar e adicionar o conteúdo a file
-        File nwFile = new File("asdasd");
-        OutputStream os = new FileOutputStream(nwFile);
-
-        os.write(messageByte);
-
-        os.close();
-        return nwFile;
+        return messageByte.toString();
     }
 
     private static String[] extractDataElements(File file) {
