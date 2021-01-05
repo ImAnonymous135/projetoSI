@@ -8,6 +8,7 @@ package service;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
+import java.util.Scanner;
 
 /**
  *
@@ -20,8 +21,13 @@ public class test {
      */
     public static void main(String[] args) {
         
-
-        System.out.println(Controller.jsonHash());
+        Controller c = new Controller();
+        Scanner sc = new Scanner(System.in);
+        
+        System.out.println("Nome da aplicação para testar:");
+        String path = sc.nextLine();
+        
+        System.out.println(c.isLicenseLegit(path));
+        
     }
-
 }

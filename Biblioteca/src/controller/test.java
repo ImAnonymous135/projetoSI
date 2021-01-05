@@ -6,6 +6,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import controller.encryptions.Hash;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,20 +27,6 @@ public class test {
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
 
-        License l = new License();
-        Gson gson = new Gson();
-
-        String json = gson.toJson(l);
-        System.out.println(json);
-
-        try {
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-            messageDigest.update(json.getBytes());
-            String stringHash = new String(messageDigest.digest());
-            System.out.println(stringHash);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
         //License l2 = gson.fromJson(json, License.class);
         //System.out.println(l2.getSystemCpuName());

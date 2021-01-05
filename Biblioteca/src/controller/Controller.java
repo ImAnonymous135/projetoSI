@@ -5,7 +5,10 @@
  */
 package controller;
 
+import controller.encryptions.CifraHibrida;
+import controller.encryptions.AssinaturaDigital;
 import com.google.gson.Gson;
+import controller.encryptions.Hash;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
@@ -20,23 +23,24 @@ import java.nio.file.Paths;
  * @author joaob
  */
 public class Controller {
+
     License l = new License();
     private String nomeApp;
     private String versao;
     private License license;
-    private CifraHibrida c= new CifraHibrida();
-    private AssinaturaDigital a= new AssinaturaDigital();
+    private CifraHibrida c = new CifraHibrida();
+    private AssinaturaDigital a = new AssinaturaDigital();
 
     public Controller(String nomeApp, String versao) {
         this.nomeApp = nomeApp;
         this.versao = versao;
         this.license = new License();
     }
-    
-    public boolean isRegistered() throws IOException{
+
+    public boolean isRegistered() throws IOException {
         return false;
     }
-    
+
     public boolean startRegistration() throws Exception {
         Gson gson = new Gson();
         String json = gson.toJson(license);
@@ -44,39 +48,16 @@ public class Controller {
         a.sign(json);
         return false;
     }
-    
-    public void showLicenseInfo(){
-        
+
+    public void showLicenseInfo() {
+
     }
-    
-    
-    public void setMail(String mail){
+
+    public void setMail(String mail) {
         this.license.setUserMail(mail);
     }
-    
+
     //---------------------------------
     //Private methods
     //---------------------------------
-    
-<<<<<<< Updated upstream
-    
-    
-    private void jsonEncrypt() {
-=======
-    private void jsonHasht() {
->>>>>>> Stashed changes
-        
-        Gson gson = new Gson();
-        String json = gson.toJson(license);
-        
-        try {
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-            messageDigest.update(json.getBytes());
-            String stringHash = new String(messageDigest.digest());
-            System.out.println(stringHash);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
 }
