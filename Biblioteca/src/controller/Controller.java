@@ -38,6 +38,7 @@ public class Controller {
     }
 
     public boolean isRegistered() throws IOException {
+        
         return false;
     }
 

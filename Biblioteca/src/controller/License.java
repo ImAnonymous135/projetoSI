@@ -65,8 +65,8 @@ public class License {
         this.systemMac = getMac();
         this.systemOsId = getOsSerial();
         this.systemHardDrivesId = getSystemIdList();
-        //this.startDate = getDate();
-        //this.expirationDate = getExpDate(12);
+        this.startDate = getDate();
+        this.expirationDate = getExpDate(12);
     }
 
     //---------------------------------

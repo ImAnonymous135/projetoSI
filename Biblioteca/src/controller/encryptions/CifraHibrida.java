@@ -117,9 +117,8 @@ public class CifraHibrida {
         byte[] messageByte = Simetrica.decriptar(secretKey, encStrByte);
         /*System.out.println("Texto em bytes: ");
         System.out.println(Arrays.toString(messageByte));*/
-        contents[1] = new String(messageByte, StandardCharsets.UTF_8);
 
-        return messageByte.toString();
+        return new String(messageByte, StandardCharsets.UTF_8);
     }
 
     private static String[] extractDataElements(File file) {
