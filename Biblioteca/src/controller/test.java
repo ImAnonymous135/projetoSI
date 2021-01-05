@@ -6,6 +6,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import controller.encryptions.CifraHibrida;
 import controller.encryptions.Hash;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,10 +26,20 @@ public class test {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        // TODO code application logic here
-
-
-        //License l2 = gson.fromJson(json, License.class);
-        //System.out.println(l2.getSystemCpuName());
+        try {
+            // TODO code application logic here
+            
+            License l = new License();
+            Gson g = new Gson();
+            CifraHibrida ch = new CifraHibrida();
+            
+            
+            //ch.encriptar(g.toJson(l), "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgFGVfrY4jQSoZQWWygZ83roKXWD4YeT2x2p41dGkPixe73rT2IW04glagN2vgoZoHuOPqa5and6kAmK2ujmCHu6D1auJhE2tXP+yLkpSiYMQucDKmCsWMnW9XlC5K7OSL77TXXcfvTvyZcjObEz6LIBRzs6+FqpFbUO9SJEfh6wIDAQAB");
+            
+            System.out.println(Hash.jsonHash(g.toJson(l)));
+            
+        } catch (Exception ex) {
+            Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

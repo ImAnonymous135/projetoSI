@@ -81,7 +81,7 @@ public class CifraHibrida {
             sb.append(encSecretkeyString).append(System.lineSeparator()).append(encDataString);
 
             // Criação do ficheiro
-            String encFilePath = "CifraHibrida";
+            String encFilePath = "license.txt";
             encryptedFile = new File(encFilePath);
             FileWriter writer;
             writer = new FileWriter(encryptedFile);
