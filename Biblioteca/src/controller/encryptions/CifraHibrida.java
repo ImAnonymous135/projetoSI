@@ -35,7 +35,13 @@ public class CifraHibrida {
 
     Simetrica sim = new Simetrica();
     Assimetrica assim = new Assimetrica();
-    License l = new License();
+    License l;
+
+    public CifraHibrida(License l) {
+        this.l = l;
+    }
+    
+    
     
     public void encriptar(String texto, String publicKey) throws FileNotFoundException, IOException, Exception {
 
@@ -59,7 +65,7 @@ public class CifraHibrida {
             System.out.println(Arrays.toString(encDataBytes));*/
 
             //Encriptar chave
-            byte[] encSecretkey = Assimetrica.encriptar(secretkeyByte, publicKey);
+            byte[] encSecretkey = Assimetrica.decriptar(secretkeyByte, publicKey);
             /*System.out.println("\n@Encrypted Secret Key : ");
             System.out.println(Arrays.toString(encSecretkey));*/
 

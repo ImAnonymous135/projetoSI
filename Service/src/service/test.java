@@ -8,7 +8,11 @@ package service;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,13 +25,22 @@ public class test {
      */
     public static void main(String[] args) {
         
-        Controller c = new Controller();
-        Scanner sc = new Scanner(System.in);
-        
-        System.out.println("Nome da aplicação para testar:");
-        String path = sc.nextLine();
-        
-        System.out.println(c.isLicenseLegit(path));
-        
+        try {
+            /*
+            Controller c = new Controller();
+            Scanner sc = new Scanner(System.in);
+            
+            System.out.println("Nome da aplicação para testar:");
+            String path = sc.nextLine();
+            
+            System.out.println(c.isLicenseLegit(path));
+            */
+            
+            KeyStore ks = KeyStore.getInstance("JKS");
+            
+            
+        } catch (KeyStoreException ex) {
+            Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

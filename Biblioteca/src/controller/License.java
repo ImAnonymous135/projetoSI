@@ -48,17 +48,13 @@ public class License {
     private String startDate;
     private String expirationDate;
 
-    public License(/*String userName, String userMail, String userId, String userCertificate, String appName, String appVersion, String fileHash, String librabryFileHash*/) {
-        /*
-        this.userName = userName;
+    public License(String userMail, String appName, String appVersion) {
+        
         this.userMail = userMail;
-        this.userId = userId;
-        this.userCertificate = userCertificate;
         this.appName = appName;
         this.appVersion = appVersion;
-        this.fileHash = fileHash;
-        this.librabryFileHash = librabryFileHash;
-         */
+        //this.fileHash = fileHash;
+        //this.librabryFileHash = librabryFileHash;
 
         this.systemCpuName = getCpuName();
         this.systemCpuId = System.getenv("PROCESSOR_IDENTIFIER");
