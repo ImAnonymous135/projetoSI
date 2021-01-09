@@ -10,9 +10,13 @@ import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import service.encryptions.KeyStorage;
 
 /**
  *
@@ -24,23 +28,20 @@ public class test {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+
+        KeyStorage keys = new KeyStorage("pass");
+
+        keys.newKey("private");
+        keys.newKey("public");
+        keys.storeKeys();
         
-        try {
-            /*
-            Controller c = new Controller();
-            Scanner sc = new Scanner(System.in);
-            
-            System.out.println("Nome da aplicação para testar:");
-            String path = sc.nextLine();
-            
-            System.out.println(c.isLicenseLegit(path));
-            */
-            
-            KeyStore ks = KeyStore.getInstance("JKS");
-            
-            
-        } catch (KeyStoreException ex) {
-            Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //retorna Secretkey
+        keys.loadKey("private");
+        
+
+        System.out.println(keys.keyString("private"));
+        System.out.println(keys.keyString("public"));
+
     }
 }
