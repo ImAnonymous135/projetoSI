@@ -9,6 +9,7 @@ import controller.encryptions.CifraHibrida;
 import controller.encryptions.AssinaturaDigital;
 import com.google.gson.Gson;
 import controller.encryptions.Hash;
+import controller.encryptions.KeyStorage;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
@@ -40,16 +41,16 @@ public class Controller {
 
     public boolean startRegistration() throws Exception {
 
+        KeyStorage storage = new KeyStorage("pass");
         CifraHibrida c = new CifraHibrida();
-        AssinaturaDigital a = new AssinaturaDigital();
-
-        License license = new License(new Scanner(System.in).nextLine(), this.nomeApp, this.versao);
-
         Gson gson = new Gson();
-        String json = gson.toJson(license);
+        System.out.println("Digite o seu email: ");
+        License license = new License(new Scanner(System.in).nextLine(), this.nomeApp, this.versao);
+        String json = gson.toJson(new Data(license,AssinaturaDigital.sign(gson.toJson(license)), Certificado.getCertificado()));
+        System.out.println(json);
         
-        c.encriptar(json, "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgFGVfrY4jQSoZQWWygZ83roKXWD4YeT2x2p41dGkPixe73rT2IW04glagN2vgoZoHuOPqa5and6kAmK2ujmCHu6D1auJhE2tXP+yLkpSiYMQucDKmCsWMnW9XlC5K7OSL77TXXcfvTvyZcjObEz6LIBRzs6+FqpFbUO9SJEfh6wIDAQAB");
-        a.sign(json);
+        
+        c.encriptar(json, storage.keyString("public", "../Service/notKeys.keystore"));
 
         return false;
     }
@@ -69,7 +70,7 @@ public class Controller {
     //---------------------------------
     //Private methods
     //---------------------------------
-    private License getLicense() {
+    /*private License getLicense() {
 
         //Objetos
         Gson json = new Gson();
@@ -83,7 +84,7 @@ public class Controller {
         while (sc.hasNextLine()) {
             sb.append(sc.nextLine());
         }
-        
+
         return json.fromJson(decryptJson(), License.class);
-    }
+    }*/
 }

@@ -41,7 +41,7 @@ import java.util.Enumeration;
  * @author josea
  */
 public class Certificado {
-    public byte[] getCertificado() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+    public static byte[] getCertificado() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
         Provider prov = Security.getProvider("SunPKCS11-CartaoCidadao");
         KeyStore ks;
 

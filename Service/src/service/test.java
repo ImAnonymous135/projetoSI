@@ -32,8 +32,8 @@ public class test {
 
         KeyStorage keys = new KeyStorage("pass");
 
-        keys.newKey("private");
         keys.newKey("public");
+        keys.newKey("private");
         keys.storeKeys();
         
         //retorna Secretkey
