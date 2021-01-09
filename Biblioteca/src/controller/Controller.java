@@ -47,7 +47,7 @@ public class Controller {
 
         Gson gson = new Gson();
         String json = gson.toJson(license);
-
+        
         c.encriptar(json, "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgFGVfrY4jQSoZQWWygZ83roKXWD4YeT2x2p41dGkPixe73rT2IW04glagN2vgoZoHuOPqa5and6kAmK2ujmCHu6D1auJhE2tXP+yLkpSiYMQucDKmCsWMnW9XlC5K7OSL77TXXcfvTvyZcjObEz6LIBRzs6+FqpFbUO9SJEfh6wIDAQAB");
         a.sign(json);
 
@@ -83,9 +83,7 @@ public class Controller {
         while (sc.hasNextLine()) {
             sb.append(sc.nextLine());
         }
-
-        return c.decriptar("/license.txt", pvtKey);
-
+        
         return json.fromJson(decryptJson(), License.class);
     }
 }

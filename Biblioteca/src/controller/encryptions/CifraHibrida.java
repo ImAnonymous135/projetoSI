@@ -33,22 +33,15 @@ import controller.License;
  */
 public class CifraHibrida {
 
-    Simetrica sim = new Simetrica();
-    Assimetrica assim = new Assimetrica();
-    License l;
+    private Simetrica sim = new Simetrica();
+    private Assimetrica assim = new Assimetrica();
+    private License l;
 
-    public CifraHibrida(License l) {
-        this.l = l;
-    }
-    
-    
-    
+        
     public void encriptar(String texto, String publicKey) throws FileNotFoundException, IOException, Exception {
 
         // Secret Key Generation
         KeyGenerator keyGenerator;
-
-        File encryptedFile = null;
 
         try {
             SecretKey secretKey = sim.generateKey();
@@ -88,7 +81,7 @@ public class CifraHibrida {
 
             // Criação do ficheiro
             String encFilePath = "license.txt";
-            encryptedFile = new File(encFilePath);
+            File encryptedFile = new File(encFilePath);
             FileWriter writer;
             writer = new FileWriter(encryptedFile);
             BufferedWriter bufWriter = new BufferedWriter(writer);

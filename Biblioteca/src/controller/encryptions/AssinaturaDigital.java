@@ -5,12 +5,21 @@
  */
 package controller.encryptions;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Provider;
+import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
+import java.security.SignatureException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import javax.security.auth.callback.CallbackHandler;
 
 /**
@@ -19,29 +28,36 @@ import javax.security.auth.callback.CallbackHandler;
  */
 public class AssinaturaDigital {
 
-    public static byte[] sign(String hash) {
-        try {
-            Provider[] provs = Security.getProviders();
-            for (int i = 0; i < provs.length; i++) {
-                System.out.println(i + " - Nome do provider: " + provs[i].getName());
-            }
+    public static byte[] sign(String hash) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, InvalidKeyException, SignatureException {
+        Provider ccProvider = Security.getProvider("SunPKCS11-CartaoCidadao");
+        KeyStore ks = KeyStore.getInstance("PKCS11", ccProvider);
+        ks.load(null, null);
+        
+        Certificate t = ks.getCertificate("CITIZEN AUTHENTICATION CERTIFICATE");
+        PrivateKey pk = (PrivateKey) ks.getKey("CITIZEN AUTHENTICATION CERTIFICATE", null);
+        Signature sig = Signature.getInstance("SHA256withRSA", ccProvider);
 
-            Provider p = provs[provs.length - 1];
-            Security.addProvider(p);
-            CallbackHandler cmdLineHdlr = new com.sun.security.auth.callback.TextCallbackHandler();
-            KeyStore.Builder builder = KeyStore.Builder.newInstance("PKCS11", p,
-                    new KeyStore.CallbackHandlerProtection(cmdLineHdlr));
-            KeyStore ks = builder.getKeyStore();
-            String assinaturaCertifLabel = "CITIZEN SIGNATURE CERTIFICATE";
-            Key key = ks.getKey(assinaturaCertifLabel, null);
-            Signature sig = Signature.getInstance("SHA1withRSA", p);
-            sig.initSign((PrivateKey) key);
-            sig.update(hash.getBytes());
-            byte[] signedHash = sig.sign();
-            return signedHash;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        sig.initSign(pk);
+
+        sig.update(hash.getBytes());
+
+        byte[] signa = sig.sign();
+        return signa;
+    }
+    
+    public static boolean verificar(String hash,String info) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, InvalidKeyException, SignatureException {
+        Provider ccProvider = Security.getProvider("SunPKCS11-CartaoCidadao");
+        KeyStore ks = KeyStore.getInstance("PKCS11", ccProvider);
+        ks.load(null, null);
+        
+        Certificate t = ks.getCertificate("CITIZEN AUTHENTICATION CERTIFICATE");PublicKey pk1 = t.getPublicKey();
+        Signature mysignature = Signature.getInstance("SHA256withRSA");
+        mysignature.initVerify(pk1);
+        
+        mysignature.update(info.getBytes());
+
+        boolean verifies = mysignature.verify(hash.getBytes());
+        
+        return verifies;
     }
 }
