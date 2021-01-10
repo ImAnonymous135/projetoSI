@@ -44,9 +44,9 @@ public class KeyStorage {
                 // Get public key
                 PublicKey publicKey = cert.getPublicKey();
                 
-                System.out.println(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+                //System.out.println(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
                 
-                System.out.println(Base64.getEncoder().encodeToString(key.getEncoded()));
+                //System.out.println(Base64.getEncoder().encodeToString(key.getEncoded()));
                 
                 // Return a key pair
                 return new KeyPair(publicKey, (PrivateKey) key);

@@ -32,11 +32,13 @@ public class Controller {
     private String nomeApp;
     private String versao;
     private KeyPair kp;
+    private KeyPair kp1;
 
     public Controller(String nomeApp, String versao) {
         this.nomeApp = nomeApp;
         this.versao = versao;
         kp = KeyStorage.getKeys("appKeys.jks", "123456", "chave");
+        kp1 = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
     }
 
     public boolean isRegistered() throws Exception {
@@ -60,9 +62,9 @@ public class Controller {
         License license = new License(new Scanner(System.in).nextLine(), this.nomeApp, this.versao);
         String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), Certificado.getCertificado()));
         json = json.replaceAll("\\\\", "");
-        System.out.println(json);
+        //System.out.println(json);
 
-        c.encriptar(json, (Key) kp.getPublic());
+        c.encriptar(json, (Key) kp1.getPublic());
 
         return false;
     }
@@ -70,7 +72,7 @@ public class Controller {
     public void showLicenseInfo() throws Exception {
         CifraHibrida c = new CifraHibrida();
         Gson gson = new Gson();
-        String json = gson.toJson(c.decriptar("license.txt", (Key) kp.getPrivate()));
+        String json = gson.toJson(c.decriptar("license.txt", (Key) kp1.getPrivate()));
 
         json = json.substring(1, json.length() - 1);
         json = json.replaceAll("\\\\", "");

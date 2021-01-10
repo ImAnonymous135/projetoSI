@@ -19,6 +19,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,15 +35,10 @@ public class test {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
-
-        // create new key
-        KeyStorage storage = new KeyStorage("pass");
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, Exception {
+        Controller c = new Controller("jo","se");
+        //c.startRegistration();
+        c.showLicenseInfo();
         
-        storage.
-        
-// get base64 encoded version of the key
-        String encodedKey = Base64.getEncoder().encodeToString(pub.getEncoded());
-        System.out.println(encodedKey);
     }
 }

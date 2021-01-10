@@ -175,7 +175,7 @@ public class License {
 
     private String getExpDate(int months) {
         LocalDateTime now = LocalDateTime.now();
-        now.plusMonths(months).toString();
+        now = now.plusMonths(months);
         return now.toString();
     }
 
