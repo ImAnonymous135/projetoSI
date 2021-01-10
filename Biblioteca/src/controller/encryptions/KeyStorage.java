@@ -5,22 +5,21 @@
  */
 package controller.encryptions;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.security.Key;
+import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 
 /**
  *
@@ -28,115 +27,41 @@ import javax.crypto.SecretKey;
  */
 public class KeyStorage {
 
-    private KeyStore store;
-    private final String PATH = "notKeys.keystore";
-    private String pass;
-
-    public KeyStorage(String pass) {
-        this.pass = pass;
-        try {
-            store = KeyStore.getInstance("JCEKS");
-            store.load(null, this.pass.toCharArray());
-        } catch (KeyStoreException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (CertificateException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private SecretKey generateKey() throws NoSuchAlgorithmException {
-        KeyGenerator generator = KeyGenerator.getInstance("AES");
-        return generator.generateKey();
-    }
-
-    public void newKey(String alias) {
+    public static KeyPair getKeys(String path, String password, String alias) {
 
         try {
-            store.setKeyEntry(alias, generateKey(), pass.toCharArray(), null);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (KeyStoreException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void storeKeys() {
-        OutputStream outputStream = null;
-        try {
-            outputStream = new FileOutputStream(new File(PATH));
-            store.store(outputStream, pass.toCharArray());
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (KeyStoreException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (CertificateException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                outputStream.close();
-            } catch (IOException ex) {
-                Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
+            FileInputStream is = new FileInputStream(path);
+            
+            KeyStore keystore = KeyStore.getInstance("jks");
+            keystore.load(is, password.toCharArray());
+            
+            Key key = keystore.getKey(alias, password.toCharArray());
+            
+            if (key instanceof PrivateKey) {
+                // Get certificate of public key
+                Certificate cert = keystore.getCertificate(alias);
+                
+                // Get public key
+                PublicKey publicKey = cert.getPublicKey();
+                
+                System.out.println(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+                
+                System.out.println(Base64.getEncoder().encodeToString(key.getEncoded()));
+                
+                // Return a key pair
+                return new KeyPair(publicKey, (PrivateKey) key);
             }
-        }
-    }
-
-    public SecretKey loadKey(String alias) {
-
-        try {
-            InputStream inputStream = new FileInputStream(PATH);
-            store.load(inputStream, pass.toCharArray());
-
-            return (SecretKey) store.getKey(alias, pass.toCharArray());
-        } catch (IOException ex) {
+        } catch (KeyStoreException ex) {
             Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (CertificateException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (KeyStoreException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnrecoverableKeyException ex) {
             Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return null;
-    }
-    
-    public SecretKey loadKey(String alias, String path) {
-
-        try {
-            InputStream inputStream = new FileInputStream(PATH);
-            store.load(inputStream, pass.toCharArray());
-
-            return (SecretKey) store.getKey(alias, pass.toCharArray());
         } catch (IOException ex) {
             Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
         } catch (CertificateException ex) {
             Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (KeyStoreException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UnrecoverableKeyException ex) {
-            Logger.getLogger(KeyStorage.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return null;
-    }
-    
-    public String keyString(String alias) {
-        return new String(loadKey(alias).getEncoded());
-    }
-    
-    public String keyString(String alias, String path) {
-        return new String(loadKey(alias, path).getEncoded());
     }
 }

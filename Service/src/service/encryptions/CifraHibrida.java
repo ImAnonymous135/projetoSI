@@ -26,6 +26,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import service.License;
+import java.security.Key;
 
 /**
  *
@@ -33,16 +34,15 @@ import service.License;
  */
 public class CifraHibrida {
 
-    Simetrica sim = new Simetrica();
-    Assimetrica assim = new Assimetrica();
-    License l = new License();
-    
-    public void encriptar(String texto, String publicKey) throws FileNotFoundException, IOException, Exception {
+    private Simetrica sim = new Simetrica();
+    private Assimetrica assim = new Assimetrica();
+    private License l;
+
+        
+    public void encriptar(String texto, Key publicKey) throws FileNotFoundException, IOException, Exception {
 
         // Secret Key Generation
         KeyGenerator keyGenerator;
-
-        File encryptedFile = null;
 
         try {
             SecretKey secretKey = sim.generateKey();
@@ -59,7 +59,7 @@ public class CifraHibrida {
             System.out.println(Arrays.toString(encDataBytes));*/
 
             //Encriptar chave
-            byte[] encSecretkey = Assimetrica.decriptar(secretkeyByte, publicKey);
+            byte[] encSecretkey = Assimetrica.encriptar(secretkeyByte, publicKey);
             /*System.out.println("\n@Encrypted Secret Key : ");
             System.out.println(Arrays.toString(encSecretkey));*/
 
@@ -82,7 +82,7 @@ public class CifraHibrida {
 
             // Criação do ficheiro
             String encFilePath = "license.txt";
-            encryptedFile = new File(encFilePath);
+            File encryptedFile = new File(encFilePath);
             FileWriter writer;
             writer = new FileWriter(encryptedFile);
             BufferedWriter bufWriter = new BufferedWriter(writer);
@@ -99,7 +99,7 @@ public class CifraHibrida {
 
     }
 
-    public String decriptar(String path, String pvtKey) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, Exception {
+    public String decriptar(String path, Key pvtKey) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, Exception {
         File inFile = new File(path);
         String[] contents = extractDataElements(inFile);
 

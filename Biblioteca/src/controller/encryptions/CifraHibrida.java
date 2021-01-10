@@ -26,6 +26,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import controller.License;
+import java.security.Key;
 
 /**
  *
@@ -38,7 +39,7 @@ public class CifraHibrida {
     private License l;
 
         
-    public void encriptar(String texto, String publicKey) throws FileNotFoundException, IOException, Exception {
+    public void encriptar(String texto, Key publicKey) throws FileNotFoundException, IOException, Exception {
 
         // Secret Key Generation
         KeyGenerator keyGenerator;
@@ -98,7 +99,7 @@ public class CifraHibrida {
 
     }
 
-    public String decriptar(String path, String pvtKey) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, Exception {
+    public String decriptar(String path, Key pvtKey) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, Exception {
         File inFile = new File(path);
         String[] contents = extractDataElements(inFile);
 
