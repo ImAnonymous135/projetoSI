@@ -51,12 +51,9 @@ public class test {
         
         json = json.substring(1, json.length() - 1);
         json = json.replaceAll("\\\\", "");
-        System.out.println(json);
         Data data = gson.fromJson(json, Data.class);
         String license = gson.toJson(data.getLicence());
-        System.out.println(license);
         if(Certificado.verificar(data.getCertificate())){
-            System.out.println(Arrays.toString(data.getSignature()));
             if(AssinaturaDigital.verificar(data.getSignature(),license ,data.getCertificate())){
                 System.out.println("Licença Aprovada!!");
             }else{

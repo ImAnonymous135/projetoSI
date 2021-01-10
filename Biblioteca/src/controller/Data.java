@@ -20,4 +20,18 @@ public class Data {
         this.signature = signature;
         this.certificate = certificate;
     }
+
+    public License getLicence() {
+        return licence;
+    }
+
+    public byte[] getSignature() {
+        return signature;
+    }
+
+    public byte[] getCertificate() {
+        return certificate;
+    }
+    
+    
 }
