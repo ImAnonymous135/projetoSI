@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
+import javax.crypto.NoSuchPaddingException;
 
 /**
  *
@@ -34,8 +35,16 @@ public class Controller {
         this.versao = versao;
     }
 
-    public boolean isRegistered() throws IOException {
-        License license = new License(new Scanner(System.in).nextLine(), this.nomeApp, this.versao);
+    public boolean isRegistered() throws Exception {
+        CifraHibrida c = new CifraHibrida();
+        Gson gson = new Gson();
+        String json = gson.toJson(c.decriptar("license.txt", "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAKAUZV+tjiNBKhlBZbKBnzeugpdYPhh5PbHanjV0aQ+LF7vetPYhbTiCVqA3a+Chmge44+prlqd3qQCYra6OYIe7oPVq4mETa1c/7IuSlKJgxC5wMqYKxYydb1eULkrs5IvvtNddx+9O/JlyM5sTPosgFHOzr4WqkVtQ71IkR+HrAgMBAAECgYAkQLo8kteP0GAyXAcmCAkA2Tql/8wASuTX9ITD4lsws/VqDKO64hMUKyBnJGX/91kkypCDNF5oCsdxZSJgV8owViYWZPnbvEcNqLtqgs7nj1UHuX9S5yYIPGN/mHL6OJJ7sosOd6rqdpg6JRRkAKUV+tmN/7Gh0+GFXM+ug6mgwQJBAO9/+CWpCAVoGxCA+YsTMb82fTOmGYMkZOAfQsvIV2v6DC8eJrSa+c0yCOTa3tirlCkhBfB08f8U2iEPS+Gu3bECQQCrG7O0gYmFL2RX1O+37ovyyHTbst4s4xbLW4jLzbSoimL235lCdIC+fllEEP96wPAiqo6dzmdH8KsGmVozsVRbAkB0ME8AZjp/9Pt8TDXD5LHzo8mlruUdnCBcIo5TMoRG2+3hRe1dHPonNCjgbdZCoyqjsWOiPfnQ2Brigvs7J4xhAkBGRiZUKC92x7QKbqXVgN9xYuq7oIanIM0nz/wq190uq0dh5Qtow7hshC/dSK3kmIEHe8z++tpoLWvQVgM538apAkBoSNfaTkDZhFavuiVl6L8cWCoDcJBItip8wKQhXwHp0O3HLg10OEd14M58ooNfpgt+8D8/8/2OOFaR0HzA+2Dm"));
+
+        json = json.substring(1, json.length() - 1);
+        json = json.replaceAll("\\\\", "");
+        Data data = gson.fromJson(json, Data.class);
+        String license = gson.toJson(data.getLicence());
+
         return false;
     }
 
@@ -46,25 +55,41 @@ public class Controller {
         Gson gson = new Gson();
         System.out.println("Digite o seu email: ");
         License license = new License(new Scanner(System.in).nextLine(), this.nomeApp, this.versao);
-        String json = gson.toJson(new Data(license,AssinaturaDigital.sign(gson.toJson(license)), Certificado.getCertificado()));
+        String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), Certificado.getCertificado()));
+        json = json.replaceAll("\\\\", "");
         System.out.println(json);
-        
-        
-        c.encriptar(json, storage.keyString("public", "../Service/notKeys.keystore"));
+
+        c.encriptar(json, "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgFGVfrY4jQSoZQWWygZ83roKXWD4YeT2x2p41dGkPixe73rT2IW04glagN2vgoZoHuOPqa5and6kAmK2ujmCHu6D1auJhE2tXP+yLkpSiYMQucDKmCsWMnW9XlC5K7OSL77TXXcfvTvyZcjObEz6LIBRzs6+FqpFbUO9SJEfh6wIDAQAB");
 
         return false;
     }
 
-    public void showLicenseInfo() {
-        try {
-            if (isRegistered()) {
-                System.out.println("Nome da aplicação: ");
-            } else {
-                System.out.println("Não possui licença válida.");
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void showLicenseInfo() throws Exception {
+        CifraHibrida c = new CifraHibrida();
+        Gson gson = new Gson();
+        String json = gson.toJson(c.decriptar("license.txt", "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAKAUZV+tjiNBKhlBZbKBnzeugpdYPhh5PbHanjV0aQ+LF7vetPYhbTiCVqA3a+Chmge44+prlqd3qQCYra6OYIe7oPVq4mETa1c/7IuSlKJgxC5wMqYKxYydb1eULkrs5IvvtNddx+9O/JlyM5sTPosgFHOzr4WqkVtQ71IkR+HrAgMBAAECgYAkQLo8kteP0GAyXAcmCAkA2Tql/8wASuTX9ITD4lsws/VqDKO64hMUKyBnJGX/91kkypCDNF5oCsdxZSJgV8owViYWZPnbvEcNqLtqgs7nj1UHuX9S5yYIPGN/mHL6OJJ7sosOd6rqdpg6JRRkAKUV+tmN/7Gh0+GFXM+ug6mgwQJBAO9/+CWpCAVoGxCA+YsTMb82fTOmGYMkZOAfQsvIV2v6DC8eJrSa+c0yCOTa3tirlCkhBfB08f8U2iEPS+Gu3bECQQCrG7O0gYmFL2RX1O+37ovyyHTbst4s4xbLW4jLzbSoimL235lCdIC+fllEEP96wPAiqo6dzmdH8KsGmVozsVRbAkB0ME8AZjp/9Pt8TDXD5LHzo8mlruUdnCBcIo5TMoRG2+3hRe1dHPonNCjgbdZCoyqjsWOiPfnQ2Brigvs7J4xhAkBGRiZUKC92x7QKbqXVgN9xYuq7oIanIM0nz/wq190uq0dh5Qtow7hshC/dSK3kmIEHe8z++tpoLWvQVgM538apAkBoSNfaTkDZhFavuiVl6L8cWCoDcJBItip8wKQhXwHp0O3HLg10OEd14M58ooNfpgt+8D8/8/2OOFaR0HzA+2Dm"));
+
+        json = json.substring(1, json.length() - 1);
+        json = json.replaceAll("\\\\", "");
+        Data data = gson.fromJson(json, Data.class);
+
+        System.out.println("Informação sobre aplicação");
+        System.out.println("Nome do utilizador:" + data.getLicence().getAppName());
+        System.out.println("Nome do utilizador:" + data.getLicence().getAppVersion());
+
+        System.out.println("Informação sobre o utilizador");
+        System.out.println("Nome do utilizador:" + data.getLicence().getUserName());
+        System.out.println("Nome do utilizador:" + data.getLicence().getUserMail());
+        System.out.println("Nome do utilizador:" + data.getLicence().getUserId());
+        
+        System.out.println("Informação sobre o sistema");
+        System.out.println("Nome do utilizador:" + data.getLicence().getSystemOsId());
+        System.out.println("Nome do utilizador:" + data.getLicence().getSystemMac());
+        System.out.println("Nome do utilizador:" + data.getLicence().getSystemCpuName());
+        
+        System.out.println("Informação sobre o intervalo temporal de validade da licença");
+        System.out.println("Nome do utilizador:" + data.getLicence().getStartDate());
+        System.out.println("Nome do utilizador:" + data.getLicence().getExpirationDate());
     }
 
     //---------------------------------
