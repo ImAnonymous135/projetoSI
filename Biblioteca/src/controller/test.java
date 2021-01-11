@@ -37,8 +37,7 @@ public class test {
      */
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException, Exception {
         Controller c = new Controller("jo","se");
-        //c.startRegistration();
-        c.showLicenseInfo();
-        
+        c.startRegistration();
+        //c.showLicenseInfo();
     }
 }

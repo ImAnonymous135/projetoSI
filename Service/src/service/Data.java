@@ -15,7 +15,7 @@ public class Data {
     private byte[] signature;
     private byte[] certificate;
 
-    public Data(/*License licence,*/ byte[] signature, byte[] certificate) {
+    public Data(License licence, byte[] signature, byte[] certificate) {
         this.licence = licence;
         this.signature = signature;
         this.certificate = certificate;

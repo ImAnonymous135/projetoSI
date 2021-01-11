@@ -16,6 +16,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -39,7 +42,7 @@ public class CifraHibrida {
     private License l;
 
         
-    public void encriptar(String texto, Key publicKey) throws FileNotFoundException, IOException, Exception {
+    public void encriptar(String path,String texto, Key publicKey) throws FileNotFoundException, IOException, Exception {
 
         // Secret Key Generation
         KeyGenerator keyGenerator;
@@ -55,13 +58,9 @@ public class CifraHibrida {
 
             //encripttar texto em claro
             byte[] encDataBytes = Simetrica.encriptar(secretKey, contentBytes);
-            /*System.out.println("\n@Encrypted Content Bytes");
-            System.out.println(Arrays.toString(encDataBytes));*/
 
             //Encriptar chave
             byte[] encSecretkey = Assimetrica.encriptar(secretkeyByte, publicKey);
-            /*System.out.println("\n@Encrypted Secret Key : ");
-            System.out.println(Arrays.toString(encSecretkey));*/
 
             //Para bytes
             Base64.Encoder encoder = Base64.getEncoder();
@@ -71,17 +70,15 @@ public class CifraHibrida {
             //Para String
             String encSecretkeyString = new String(base64EncSecKey, StandardCharsets.UTF_8);
             String encDataString = new String(base64EncData, StandardCharsets.UTF_8);
-            /*System.out.println("\n@Encrypted Secret Key String: ");
-            System.out.println(encSecretkeyString);
-            System.out.println("\n@Encrypted Data String: ");
-            System.out.println(encDataString);*/
 
             //Conteudo do ficheiro
             StringBuilder sb = new StringBuilder();
             sb.append(encSecretkeyString).append(System.lineSeparator()).append(encDataString);
 
             // Criação do ficheiro
-            String encFilePath = "licenca/license.txt";
+            Path paths = Paths.get(path);
+            Files.createDirectories(paths);
+            String encFilePath = path + "/license.txt";
             File encryptedFile = new File(encFilePath);
             FileWriter writer;
             writer = new FileWriter(encryptedFile);
@@ -103,20 +100,15 @@ public class CifraHibrida {
         File inFile = new File(path);
         String[] contents = extractDataElements(inFile);
 
-        //System.out.println("Linhas: " + contents.length);
         Base64.Decoder decoder = Base64.getDecoder();
         byte[] encSecretKeyByte = decoder.decode(contents[0]);
         //desencriptar chave simetrica
         byte[] secretKeyBytes = Assimetrica.decriptar(encSecretKeyByte, pvtKey);
-        /*System.out.println("Secret Key Bytes: ");
-        System.out.println(Arrays.toString(secretKeyBytes));*/
         SecretKey secretKey = new SecretKeySpec(secretKeyBytes, 0, secretKeyBytes.length, "AES");
 
         //desencriptar o texto em claro
         byte[] encStrByte = decoder.decode(contents[1]);
         byte[] messageByte = Simetrica.decriptar(secretKey, encStrByte);
-        /*System.out.println("Texto em bytes: ");
-        System.out.println(Arrays.toString(messageByte));*/
 
         return new String(messageByte, StandardCharsets.UTF_8);
     }

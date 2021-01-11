@@ -6,15 +6,27 @@
 package service;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +41,7 @@ public class License {
     private String userName;
     private String userMail;
     private String userId;
-    private String userCertificate;
+    private byte[] userCertificate;
 
     //System Info
     private String systemCpuName;
@@ -46,11 +58,16 @@ public class License {
 
     //Time Info
     private String startDate;
-    private LocalDateTime expirationDate;
+    private String expirationDate;
 
-    public License(String userMail, String appName, String appVersion) {
-        
+    public License(String userMail, String appName, String appVersion) throws IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException {
+        String info[] = setUser();
+
+        this.userName = info[0];
+        this.userId = info[1];
         this.userMail = userMail;
+        this.userCertificate = Certificado.getCertificado();
+
         this.appName = appName;
         this.appVersion = appVersion;
         //this.fileHash = fileHash;
@@ -62,12 +79,43 @@ public class License {
         this.systemOsId = getOsSerial();
         this.systemHardDrivesId = getSystemIdList();
         this.startDate = getDate();
-        this.expirationDate = getExpDate(12);
+        //this.expirationDate = getExpDate(12);
     }
 
     //---------------------------------
     //Private methods
     //---------------------------------
+    private String[] setUser() throws IOException, NoSuchAlgorithmException, CertificateException {
+        Provider prov = Security.getProvider("SunPKCS11-CartaoCidadao");
+
+        KeyStore ks;
+        String info[] = new String[2];
+        try {
+
+            ks = KeyStore.getInstance("PKCS11", prov);
+            ks.load(null, null);
+            Certificate t = ks.getCertificate("CITIZEN AUTHENTICATION CERTIFICATE");
+
+            String asd = t.toString();
+            String[] qwe = asd.split("CN=");
+            String qwer[] = qwe[1].split(",");
+
+            String[] qwe1 = asd.split("SERIALNUMBER=BI");
+            String qwer2[] = qwe1[1].split(",");
+
+            info[0] = qwer[0];
+            info[1] = qwer2[0];
+
+        } catch (KeyStoreException ex) {
+            Logger.getLogger(License.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return info;
+    }
+
+    public void setUserCertificate(byte[] userCertificate) {
+        this.userCertificate = userCertificate;
+    }
+
     private String getOsSerial() {
 
         String line = "";
@@ -173,17 +221,15 @@ public class License {
         return now.toString();
     }
 
-    private LocalDateTime getExpDate(int months) {
+    private String getExpDate(int months) {
         LocalDateTime now = LocalDateTime.now();
         now = now.plusMonths(months);
-        return now;
+        return now.toString();
     }
 
     public void setUserMail(String userMail) {
         this.userMail = userMail;
     }
-    
-    
 
     //---------------------------------
     //Getters
@@ -208,7 +254,7 @@ public class License {
         return userId;
     }
 
-    public String getUserCertificate() {
+    public byte[] getUserCertificate() {
         return userCertificate;
     }
 
@@ -244,7 +290,7 @@ public class License {
         return startDate;
     }
 
-    public LocalDateTime getExpirationDate() {
+    public String getExpirationDate() {
         return expirationDate;
     }
 

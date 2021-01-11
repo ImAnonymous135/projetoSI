@@ -52,7 +52,7 @@ public class Certificado {
         return t.getEncoded();
     }
 
-    public boolean verificar(byte[] certificado) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, KeyStoreException, IOException, CertificateException {
+    public static boolean verificar(byte[] certificado) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, KeyStoreException, IOException, CertificateException {
         Provider prov = Security.getProvider("SunPKCS11-CartaoCidadao");
 
         KeyStore ks;

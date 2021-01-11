@@ -47,21 +47,15 @@ public class CifraHibrida {
         try {
             SecretKey secretKey = sim.generateKey();
             byte[] secretkeyByte = secretKey.getEncoded();
-            /*System.out.println("Secret Key:");
-            System.out.println(Arrays.toString(secretkeyByte));*/
 
             // Ler conteúdo
             byte[] contentBytes = texto.getBytes();
 
             //encripttar texto em claro
             byte[] encDataBytes = Simetrica.encriptar(secretKey, contentBytes);
-            /*System.out.println("\n@Encrypted Content Bytes");
-            System.out.println(Arrays.toString(encDataBytes));*/
 
             //Encriptar chave
             byte[] encSecretkey = Assimetrica.encriptar(secretkeyByte, publicKey);
-            /*System.out.println("\n@Encrypted Secret Key : ");
-            System.out.println(Arrays.toString(encSecretkey));*/
 
             //Para bytes
             Base64.Encoder encoder = Base64.getEncoder();
@@ -71,10 +65,6 @@ public class CifraHibrida {
             //Para String
             String encSecretkeyString = new String(base64EncSecKey, StandardCharsets.UTF_8);
             String encDataString = new String(base64EncData, StandardCharsets.UTF_8);
-            /*System.out.println("\n@Encrypted Secret Key String: ");
-            System.out.println(encSecretkeyString);
-            System.out.println("\n@Encrypted Data String: ");
-            System.out.println(encDataString);*/
 
             //Conteudo do ficheiro
             StringBuilder sb = new StringBuilder();
@@ -103,20 +93,14 @@ public class CifraHibrida {
         File inFile = new File(path);
         String[] contents = extractDataElements(inFile);
 
-        //System.out.println("Linhas: " + contents.length);
         Base64.Decoder decoder = Base64.getDecoder();
         byte[] encSecretKeyByte = decoder.decode(contents[0]);
-        //desencriptar chave simetrica
         byte[] secretKeyBytes = Assimetrica.decriptar(encSecretKeyByte, pvtKey);
-        /*System.out.println("Secret Key Bytes: ");
-        System.out.println(Arrays.toString(secretKeyBytes));*/
         SecretKey secretKey = new SecretKeySpec(secretKeyBytes, 0, secretKeyBytes.length, "AES");
 
         //desencriptar o texto em claro
         byte[] encStrByte = decoder.decode(contents[1]);
         byte[] messageByte = Simetrica.decriptar(secretKey, encStrByte);
-        /*System.out.println("Texto em bytes: ");
-        System.out.println(Arrays.toString(messageByte));*/
 
         return new String(messageByte, StandardCharsets.UTF_8);
     }

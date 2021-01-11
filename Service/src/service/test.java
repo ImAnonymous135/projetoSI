@@ -5,6 +5,10 @@
  */
 package service;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  *
  * @author joaob
@@ -15,7 +19,9 @@ public class test {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
+        Path paths = Paths.get("aprovar");
+        Files.createDirectories(paths);
         Controller c = new Controller();
-        System.out.println(c.isLicenseLegit("license.txt"));
+        System.out.println(c.isLicenseLegit("aprovar/license.txt"));
     }
 }

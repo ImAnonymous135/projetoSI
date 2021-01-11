@@ -32,30 +32,40 @@ public class Controller {
 
     private String nomeApp;
     private String versao;
-    private KeyPair kp;
-    private KeyPair kp1;
+    private KeyPair kpApp;
+    private KeyPair kpService;
 
     public Controller(String nomeApp, String versao) {
         this.nomeApp = nomeApp;
         this.versao = versao;
-        kp = KeyStorage.getKeys("appKeys.jks", "123456", "chave");
-        kp1 = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
+        kpApp = KeyStorage.getKeys("appKeys.jks", "123456", "chave");
+        kpService = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
     }
 
     public boolean isRegistered() throws Exception {
         CifraHibrida c = new CifraHibrida();
         Gson gson = new Gson();
-        String json = gson.toJson(c.decriptar("license.txt", (Key) kp.getPrivate()));
+        String json = gson.toJson(c.decriptar("license.txt", (Key) kpApp.getPrivate()));
 
         json = json.substring(1, json.length() - 1);
         json = json.replaceAll("\\\\", "");
         Data data = gson.fromJson(json, Data.class);
         License license = data.getLicence();
-        License license2 = new License("compare","compare","compare");
         
-        if (isDataValid(license) + isUserValid(license, license2) + isSystemValid(license, license2) >= 3) {
-            return false;
+        if (Certificado.verificar(data.getLicence().getUserCertificate())) {
+            if (AssinaturaDigital.verificar(data.getSignature(), gson.toJson(data.getLicence()))) {
+                System.out.println("Licença Aprovada!!");
+                License license2 = new License("compare", "compare", "compare");
+                if (isDataValid(license) + isUserValid(license, license2) + isSystemValid(license, license2) >= 3) {
+                    return false;
+                }
+            } else {
+                System.out.println("Assinatura Inválida!!");
+            }
+        } else {
+            System.out.println("Certificado Invalido!!");
         }
+
         return true;
     }
 
@@ -65,11 +75,10 @@ public class Controller {
         Gson gson = new Gson();
         System.out.println("Digite o seu email: ");
         License license = new License(new Scanner(System.in).nextLine(), this.nomeApp, this.versao);
-        String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), Certificado.getCertificado()));
+        String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), null));
         json = json.replaceAll("\\\\", "");
-        //System.out.println(json);
 
-        c.encriptar(json, (Key) kp1.getPublic());
+        c.encriptar(json, (Key) kpService.getPublic());
 
         return false;
     }
@@ -77,7 +86,7 @@ public class Controller {
     public void showLicenseInfo() throws Exception {
         CifraHibrida c = new CifraHibrida();
         Gson gson = new Gson();
-        String json = gson.toJson(c.decriptar("license.txt", (Key) kp1.getPrivate()));
+        String json = gson.toJson(c.decriptar("licenca/license.txt", (Key) kpApp.getPrivate()));
 
         System.out.println(json);
         json = json.substring(1, json.length() - 1);
@@ -146,21 +155,21 @@ public class Controller {
         }
         return isValid;
     }
-    
+
     private int isDataValid(License licenseStored) {
-        
+
         int isValid = 0;
-        
-        if (LocalDateTime.now().isBefore(licenseStored.getExpirationDate())) {
+
+        if (LocalDateTime.now().isBefore(LocalDateTime.parse(licenseStored.getExpirationDate()))) {
             return isValid += 4;
         }
         return isValid;
     }
-    
+
     private int isSystemValid(License licenseStored, License licenseCurrent) {
-        
+
         int isValid = 0;
-        
+
         if (!licenseStored.getSystemCpuId().equals(licenseCurrent.getSystemCpuId())) {
             isValid++;
         }
@@ -173,7 +182,7 @@ public class Controller {
         if (isValid >= 3) {
             return isValid;
         }
-       if (!licenseStored.getSystemHardDrivesId().equals(licenseCurrent.getSystemHardDrivesId())) {
+        if (!licenseStored.getSystemHardDrivesId().equals(licenseCurrent.getSystemHardDrivesId())) {
             isValid++;
         }
         return isValid;

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -32,14 +33,11 @@ import javax.security.auth.callback.CallbackHandler;
  */
 public class AssinaturaDigital {
 
-    public static byte[] sign(String hash) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, InvalidKeyException, SignatureException {
-        Provider ccProvider = Security.getProvider("SunPKCS11-CartaoCidadao");
-        KeyStore ks = KeyStore.getInstance("PKCS11", ccProvider);
-        ks.load(null, null);
-        
-        Certificate t = ks.getCertificate("CITIZEN AUTHENTICATION CERTIFICATE");
-        PrivateKey pk = (PrivateKey) ks.getKey("CITIZEN AUTHENTICATION CERTIFICATE", null);
-        Signature sig = Signature.getInstance("SHA256withRSA", ccProvider);
+    public static byte[] sign(String hash) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, InvalidKeyException, SignatureException { 
+        KeyPair kpService= KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
+       
+        PrivateKey pk = (PrivateKey) kpService.getPrivate();
+        Signature sig = Signature.getInstance("SHA256withRSA");
 
         sig.initSign(pk);
 
@@ -54,11 +52,6 @@ public class AssinaturaDigital {
         KeyStore ks = KeyStore.getInstance("PKCS11", ccProvider);
         ks.load(null, null);
         
-        Provider prov = Security.getProvider("SunPKCS11-CartaoCidadao");
-        ks = KeyStore.getInstance("PKCS11", prov);
-        ks.load(null, null);
-        Enumeration<String> als = ks.aliases();
-        Certificate t = ks.getCertificate("CITIZEN AUTHENTICATION CERTIFICATE");
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
         InputStream in = new ByteArrayInputStream(certificado);
         Certificate certif = certFactory.generateCertificate(in);

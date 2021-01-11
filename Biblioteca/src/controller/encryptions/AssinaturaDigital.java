@@ -5,9 +5,12 @@
  */
 package controller.encryptions;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -20,6 +23,8 @@ import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.util.Enumeration;
 import javax.security.auth.callback.CallbackHandler;
 
 /**
@@ -45,18 +50,16 @@ public class AssinaturaDigital {
         return signa;
     }
     
-    public static boolean verificar(String hash,String info) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, InvalidKeyException, SignatureException {
-        Provider ccProvider = Security.getProvider("SunPKCS11-CartaoCidadao");
-        KeyStore ks = KeyStore.getInstance("PKCS11", ccProvider);
-        ks.load(null, null);
+    public static boolean verificar(byte[] hash, String info) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, InvalidKeyException, SignatureException {
+        KeyPair kpService = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
+        PublicKey pk = kpService.getPublic();
         
-        Certificate t = ks.getCertificate("CITIZEN AUTHENTICATION CERTIFICATE");PublicKey pk1 = t.getPublicKey();
-        Signature mysignature = Signature.getInstance("SHA256withRSA");
-        mysignature.initVerify(pk1);
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        signature.initVerify(pk);
         
-        mysignature.update(info.getBytes());
+        signature.update(info.getBytes());
 
-        boolean verifies = mysignature.verify(hash.getBytes());
+        boolean verifies = signature.verify(hash);
         
         return verifies;
     }
