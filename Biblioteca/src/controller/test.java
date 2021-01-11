@@ -36,17 +36,15 @@ public class test {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException, Exception {
-<<<<<<< Updated upstream
         Controller c = new Controller("jo","se");
-        c.startRegistration();
+        //c.startRegistration();
         //c.showLicenseInfo();
-=======
         //Controller c = new Controller("jo","se");
         //c.startRegistration();
         //c.showLicenseInfo();
         
         System.out.println("Hello world");
-        
->>>>>>> Stashed changes
+        System.out.println(c.isRegistered());
+
     }
 }

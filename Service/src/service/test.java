@@ -21,7 +21,6 @@ public class test {
     public static void main(String[] args) throws Exception {
         Path paths = Paths.get("aprovar");
         Files.createDirectories(paths);
-        Controller c = new Controller();
-        System.out.println(c.isLicenseLegit("aprovar/license.txt"));
+        
     }
 }

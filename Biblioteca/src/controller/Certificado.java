@@ -47,7 +47,6 @@ public class Certificado {
 
         ks = KeyStore.getInstance("PKCS11", prov);
         ks.load(null, null);
-        Enumeration<String> als = ks.aliases();
         Certificate t = ks.getCertificate("CITIZEN AUTHENTICATION CERTIFICATE");
         return t.getEncoded();
     }
@@ -59,7 +58,6 @@ public class Certificado {
 
         ks = KeyStore.getInstance("PKCS11", prov);
         ks.load(null, null);
-        Enumeration<String> als = ks.aliases();
         Certificate t = ks.getCertificate("CITIZEN AUTHENTICATION CERTIFICATE");
 
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
@@ -72,7 +70,6 @@ public class Certificado {
         PKIXParameters par = new PKIXParameters(ks);
         for (TrustAnchor ta : par.getTrustAnchors()) {
             X509Certificate c = ta.getTrustedCert();
-            System.out.println(c.getSubjectDN().getName());
         }
 
         //defines the end-user certificate as a selector
@@ -95,9 +92,8 @@ public class Certificado {
         try {
             CertPathBuilderResult cpbr = cpb.build(pkixBParams);
             cp = cpbr.getCertPath();
-            System.out.println("Certification path built with success!");
         } catch (CertPathBuilderException ex) {
-            System.out.println("It was not possible to build a certification path!");
+            return false;
         }
 
         PKIXParameters pkixParams = new PKIXParameters(par.getTrustAnchors());
@@ -117,9 +113,6 @@ public class Certificado {
         try {
 //Do the velidation
             result = (PKIXCertPathValidatorResult) cpv.validate(cp, pkixParams);
-            System.out.println("Certificado Válido");
-            System.out.println("Issuer of trust anchor certificate: "
-                    + result.getTrustAnchor().getTrustedCert().getIssuerDN().getName());
             return true;
         } catch (CertPathValidatorException cpve) {
             return false;

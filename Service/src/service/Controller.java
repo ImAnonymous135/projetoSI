@@ -10,10 +10,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyPair;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -35,40 +40,38 @@ public class Controller {
     private KeyPair kpApp;
     private KeyPair kpService;
 
-    public boolean isLicenseLegit(String path) throws Exception {
-        
+    public String isLicenseLegit(String path) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, KeyStoreException, IOException, CertificateException, UnrecoverableKeyException, SignatureException,FileNotFoundException, Exception {
+
         kpService = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
-        
+
         CifraHibrida c = new CifraHibrida();
-        Gson gson = new Gson(); 
+        Gson gson = new Gson();
         String json = gson.toJson(c.decriptar(path, kpService.getPrivate()));
-        json = json.substring(1, json.length() - 1); 
+        json = json.substring(1, json.length() - 1);
         json = json.replaceAll("\\\\", "");
-        Data data = gson.fromJson(json, Data.class); 
-        String license = gson.toJson(data.getLicence()); 
-        if(Certificado.verificar(data.getLicence().getUserCertificate())){ 
-            if(AssinaturaDigital.verificar(data.getSignature(),license ,data.getLicence().getUserCertificate())){ 
-                System.out.println("Licença Aprovada!!");
-                criarFicheiro("licenca/"+data.getLicence().getAppName(),data.getLicence());
-                return true;
-            }else{ 
-                System.out.println("Assinatura Inválida!!"); 
-            } 
-        }else{ 
-            System.out.println("Certificado Invalido!!"); 
-        } 
-         
-        return false;
+        Data data = gson.fromJson(json, Data.class);
+        String license = gson.toJson(data.getLicence());
+        if (Certificado.verificar(data.getLicence().getUserCertificate())) {
+            if (AssinaturaDigital.verificar(data.getSignature(), license, data.getLicence().getUserCertificate())) {
+                criarFicheiro("licenca/" + data.getLicence().getAppName(), data.getLicence());
+                return "Licença Aprovada!!";
+            } else {
+                return "Assinatura Inválida!!";
+            }
+        } else {
+            return "Certificado Invalido!!";
+        }
+
     }
-    
-    private void criarFicheiro(String path, License license) throws Exception{
+
+    private void criarFicheiro(String path, License license) throws Exception {
         kpApp = KeyStorage.getKeys("appKeys.jks", "123456", "chave");
-        
+
         CifraHibrida c = new CifraHibrida();
         Gson gson = new Gson();
         String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), null));
         json = json.replaceAll("\\\\", "");
 
-        c.encriptar(path,json, (Key) kpApp.getPublic());
+        c.encriptar(path, json, (Key) kpApp.getPublic());
     }
 }

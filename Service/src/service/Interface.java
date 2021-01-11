@@ -5,6 +5,20 @@
  */
 package service;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+
 /**
  *
  * @author joaob
@@ -94,9 +108,26 @@ public class Interface extends javax.swing.JFrame {
         // TODO add your handling code here:
         String message = "";
         String path = inputField.getText();
-        
-        //Fazes aqui para verificar passas o path cm parametro e retorna o resultad cm string para a message
-        
+        Controller c = new Controller();
+        try {
+            message = c.isLicenseLegit("C:/Users/josea/OneDrive/'Ambiente de Trabalho'/aprovar" + path);
+            //Fazes aqui para verificar passas o path cm parametro e retorna o resultad cm string para a message
+        } catch (FileNotFoundException ex) {
+            message = "ficheiro nao encontrado";
+        } catch (NoSuchAlgorithmException ex) {
+        } catch (InvalidKeyException ex) {
+        } catch (BadPaddingException ex) {
+        } catch (IllegalBlockSizeException ex) {
+        } catch (InvalidAlgorithmParameterException ex) {
+        } catch (KeyStoreException ex) {
+        } catch (IOException ex) {
+        } catch (CertificateException ex) {
+        } catch (UnrecoverableKeyException ex) {
+        } catch (SignatureException ex) {
+        } catch (Exception ex) {
+            message = "ficheiro nao encontrado";
+        }
+
         logText.setText(logText.getText().concat(message).concat("\n"));
     }//GEN-LAST:event_verifyButtonActionPerformed
 

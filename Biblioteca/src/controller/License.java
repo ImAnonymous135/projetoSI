@@ -79,7 +79,7 @@ public class License {
         this.systemOsId = getOsSerial();
         this.systemHardDrivesId = getSystemIdList();
         this.startDate = getDate();
-        //this.expirationDate = getExpDate(12);
+        this.expirationDate = getExpDate(12);
     }
 
     //---------------------------------

@@ -45,13 +45,13 @@ public class Controller {
     public boolean isRegistered() throws Exception {
         CifraHibrida c = new CifraHibrida();
         Gson gson = new Gson();
-        String json = gson.toJson(c.decriptar("license.txt", (Key) kpApp.getPrivate()));
+        String json = gson.toJson(c.decriptar("licenca/license.txt", (Key) kpApp.getPrivate()));
 
         json = json.substring(1, json.length() - 1);
         json = json.replaceAll("\\\\", "");
         Data data = gson.fromJson(json, Data.class);
         License license = data.getLicence();
-        
+        System.out.println("b");
         if (Certificado.verificar(data.getLicence().getUserCertificate())) {
             if (AssinaturaDigital.verificar(data.getSignature(), gson.toJson(data.getLicence()))) {
                 System.out.println("Licença Aprovada!!");
@@ -88,10 +88,10 @@ public class Controller {
         Gson gson = new Gson();
         String json = gson.toJson(c.decriptar("licenca/license.txt", (Key) kpApp.getPrivate()));
 
-        System.out.println(json);
+        //System.out.println(json);
         json = json.substring(1, json.length() - 1);
         json = json.replaceAll("\\\\", "");
-        System.out.println(json);
+        //System.out.println(json);
         Data data = gson.fromJson(json, Data.class);
 
         System.out.println("Informação sobre aplicação");
@@ -160,7 +160,7 @@ public class Controller {
 
         int isValid = 0;
 
-        if (LocalDateTime.now().isBefore(LocalDateTime.parse(licenseStored.getExpirationDate()))) {
+        if (LocalDateTime.now().isAfter(LocalDateTime.parse(licenseStored.getExpirationDate()))) {
             return isValid += 4;
         }
         return isValid;
