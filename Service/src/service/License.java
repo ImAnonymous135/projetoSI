@@ -46,27 +46,23 @@ public class License {
 
     //Time Info
     private String startDate;
-    private String expirationDate;
+    private LocalDateTime expirationDate;
 
-    public License(/*String userName, String userMail, String userId, String userCertificate, String appName, String appVersion, String fileHash, String librabryFileHash*/) {
-        /*
-        this.userName = userName;
+    public License(String userMail, String appName, String appVersion) {
+        
         this.userMail = userMail;
-        this.userId = userId;
-        this.userCertificate = userCertificate;
         this.appName = appName;
         this.appVersion = appVersion;
-        this.fileHash = fileHash;
-        this.librabryFileHash = librabryFileHash;
-         */
+        //this.fileHash = fileHash;
+        //this.librabryFileHash = librabryFileHash;
 
         this.systemCpuName = getCpuName();
         this.systemCpuId = System.getenv("PROCESSOR_IDENTIFIER");
         this.systemMac = getMac();
         this.systemOsId = getOsSerial();
         this.systemHardDrivesId = getSystemIdList();
-        //this.startDate = getDate();
-        //this.expirationDate = getExpDate(12);
+        this.startDate = getDate();
+        this.expirationDate = getExpDate(12);
     }
 
     //---------------------------------
@@ -177,11 +173,17 @@ public class License {
         return now.toString();
     }
 
-    private String getExpDate(int months) {
+    private LocalDateTime getExpDate(int months) {
         LocalDateTime now = LocalDateTime.now();
-        now.plusMonths(months).toString();
-        return now.toString();
+        now = now.plusMonths(months);
+        return now;
     }
+
+    public void setUserMail(String userMail) {
+        this.userMail = userMail;
+    }
+    
+    
 
     //---------------------------------
     //Getters
@@ -242,7 +244,7 @@ public class License {
         return startDate;
     }
 
-    public String getExpirationDate() {
+    public LocalDateTime getExpirationDate() {
         return expirationDate;
     }
 

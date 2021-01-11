@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyPair;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 import javax.crypto.NoSuchPaddingException;
 
@@ -49,9 +50,13 @@ public class Controller {
         json = json.substring(1, json.length() - 1);
         json = json.replaceAll("\\\\", "");
         Data data = gson.fromJson(json, Data.class);
-        String license = gson.toJson(data.getLicence());
-
-        return false;
+        License license = data.getLicence();
+        License license2 = new License("compare","compare","compare");
+        
+        if (isDataValid(license) + isUserValid(license, license2) + isSystemValid(license, license2) >= 3) {
+            return false;
+        }
+        return true;
     }
 
     public boolean startRegistration() throws Exception {
@@ -74,8 +79,10 @@ public class Controller {
         Gson gson = new Gson();
         String json = gson.toJson(c.decriptar("license.txt", (Key) kp1.getPrivate()));
 
+        System.out.println(json);
         json = json.substring(1, json.length() - 1);
         json = json.replaceAll("\\\\", "");
+        System.out.println(json);
         Data data = gson.fromJson(json, Data.class);
 
         System.out.println("Informação sobre aplicação");
@@ -128,7 +135,23 @@ public class Controller {
 
         int isValid = 0;
 
-        if (licenseStored.getUserId().equals(licenseCurrent.getUserId()) && licenseStored.getUserName().equals(licenseCurrent.getUserName())) {
+        if (!licenseStored.getUserId().equals(licenseCurrent.getUserId())) {
+            return isValid += 4;
+        }
+        if (!licenseStored.getUserName().equals(licenseCurrent.getUserName())) {
+            return isValid += 4;
+        }
+        if (!licenseStored.getUserCertificate().equals(licenseCurrent.getUserCertificate())) {
+            return isValid += 4;
+        }
+        return isValid;
+    }
+    
+    private int isDataValid(License licenseStored) {
+        
+        int isValid = 0;
+        
+        if (LocalDateTime.now().isBefore(licenseStored.getExpirationDate())) {
             return isValid += 4;
         }
         return isValid;
@@ -138,7 +161,21 @@ public class Controller {
         
         int isValid = 0;
         
-       
-        return 0;
+        if (!licenseStored.getSystemCpuId().equals(licenseCurrent.getSystemCpuId())) {
+            isValid++;
+        }
+        if (!licenseStored.getSystemMac().equals(licenseCurrent.getSystemMac())) {
+            isValid++;
+        }
+        if (!licenseStored.getSystemOsId().equals(licenseCurrent.getSystemOsId())) {
+            isValid++;
+        }
+        if (isValid >= 3) {
+            return isValid;
+        }
+       if (!licenseStored.getSystemHardDrivesId().equals(licenseCurrent.getSystemHardDrivesId())) {
+            isValid++;
+        }
+        return isValid;
     }
 }

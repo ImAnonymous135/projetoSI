@@ -46,7 +46,7 @@ public class License {
 
     //Time Info
     private String startDate;
-    private String expirationDate;
+    private LocalDateTime expirationDate;
 
     public License(String userMail, String appName, String appVersion) {
         
@@ -173,10 +173,10 @@ public class License {
         return now.toString();
     }
 
-    private String getExpDate(int months) {
+    private LocalDateTime getExpDate(int months) {
         LocalDateTime now = LocalDateTime.now();
         now = now.plusMonths(months);
-        return now.toString();
+        return now;
     }
 
     public void setUserMail(String userMail) {
@@ -244,7 +244,7 @@ public class License {
         return startDate;
     }
 
-    public String getExpirationDate() {
+    public LocalDateTime getExpirationDate() {
         return expirationDate;
     }
 
