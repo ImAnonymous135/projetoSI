@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -62,5 +63,20 @@ public class Controller {
         } 
          
         return false;
+    }
+    
+    public void criarFicheiro(){
+        kp = KeyStorage.getKeys("appKeys.jks", "123456", "chave");
+        kp1 = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
+        
+        CifraHibrida c = new CifraHibrida();
+        Gson gson = new Gson();
+        System.out.println("Digite o seu email: ");
+        License license = new License(new Scanner(System.in).nextLine(), this.nomeApp, this.versao);
+        String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), Certificado.getCertificado()));
+        json = json.replaceAll("\\\\", "");
+        //System.out.println(json);
+
+        c.encriptar(json, (Key) kp1.getPublic());
     }
 }
