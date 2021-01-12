@@ -27,6 +27,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
@@ -38,6 +39,8 @@ import java.util.logging.Logger;
  */
 public class License {
 
+    private byte[] fileHash;
+    private byte[] librabryFileHash;
     //User Info
     private String userName;
     private String userMail;
@@ -54,8 +57,6 @@ public class License {
     //App Info
     private String appName;
     private String appVersion;
-    private String fileHash;
-    private String librabryFileHash;
 
     //Time Info
     private String startDate;
@@ -80,18 +81,20 @@ public class License {
         this.systemOsId = getOsSerial();
         this.systemHardDrivesId = getSystemIdList();
         this.startDate = getDate();
-        this.expirationDate = getExpDate(-1);
+        this.expirationDate = getExpDate(12);
     }
 
     //---------------------------------
     //Private methods
     //---------------------------------
-    private String getLibHash() {
-        return new String(Hash.getFileHash("dist/lib/Biblioteca.jar"));
+    private byte[] getLibHash() {
+        System.out.println(Arrays.toString(Hash.getFileHash("dist/lib/Biblioteca.jar")));
+        return Hash.getFileHash("dist/lib/Biblioteca.jar");
     }
 
-    private String getAppHash() {
-        return new String(Hash.getFileHash("dist/Aplicacao.jar"));
+    private byte[] getAppHash() {
+        System.out.println(Arrays.toString(Hash.getFileHash("dist/Aplicacao.jar")));
+        return Hash.getFileHash("dist/Aplicacao.jar");
     }
 
     private String[] setUser() throws IOException, NoSuchAlgorithmException, CertificateException {
@@ -287,11 +290,11 @@ public class License {
         return appVersion;
     }
 
-    public String getFileHash() {
+    public byte[] getFileHash() {
         return fileHash;
     }
 
-    public String getLibrabryFileHash() {
+    public byte[] getLibrabryFileHash() {
         return librabryFileHash;
     }
 

@@ -26,7 +26,7 @@ public class Controller {
     private String versao;
     private KeyPair kpApp;
     private KeyPair kpService;
-
+    
     public Controller(String nomeApp, String versao) {
         this.nomeApp = nomeApp;
         this.versao = versao;

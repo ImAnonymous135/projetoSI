@@ -33,8 +33,8 @@ public class Controller {
     private KeyPair kpApp;
     private KeyPair kpService;
 
-    public String isLicenseLegit(String path) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, KeyStoreException, IOException, CertificateException, UnrecoverableKeyException, SignatureException,FileNotFoundException, Exception {
-        System.out.println("a");
+    public String isLicenseLegit(String path) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, KeyStoreException, IOException, CertificateException, UnrecoverableKeyException, SignatureException, FileNotFoundException, Exception {
+        System.out.println("c");
         kpService = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
 
         CifraHibrida c = new CifraHibrida();
@@ -44,6 +44,7 @@ public class Controller {
         json = json.replaceAll("\\\\", "");
         Data data = gson.fromJson(json, Data.class);
         String license = gson.toJson(data.getLicence());
+        System.out.println(json);
         if (Certificado.verificar(data.getLicence().getUserCertificate())) {
             if (AssinaturaDigital.verificar(data.getSignature(), license, data.getLicence().getUserCertificate())) {
                 criarFicheiro("licenca/" + data.getLicence().getAppName(), data.getLicence());

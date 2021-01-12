@@ -20,7 +20,11 @@ public class aplicacao {
         Scanner sc = new Scanner(System.in);
         System.out.println("Hello");
 
-        Controller c = null;
+        System.out.println("Qual o nome da app?");
+        String nomeApp = sc.nextLine();
+        System.out.println("Qual a versão?");
+        String versao = sc.nextLine();
+        Controller c = new Controller(nomeApp, versao);
 
         while (true) {
             System.out.println("Escolha uma opção:");
@@ -31,13 +35,6 @@ public class aplicacao {
             String opcao = sc.nextLine();
             switch (opcao) {
                 case "1":
-                    System.out.println("Qual o nome da app?");
-                    String nomeApp = sc.nextLine();
-                    System.out.println("Qual a versão?");
-                    String versao = sc.nextLine();
-                    System.out.println("Qual o seu mail?");
-                    String mail = sc.nextLine();
-                    c = new Controller(nomeApp, versao);
                     c.startRegistration();
                     break;
                 case "2":

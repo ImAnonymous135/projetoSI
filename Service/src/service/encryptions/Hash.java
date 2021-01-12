@@ -31,7 +31,7 @@ public final class Hash {
 
             while (dis.read() != -1) {
             }
-
+            is.close();
             return md.digest();
         } catch (IOException ex) {
             Logger.getLogger(Hash.class.getName()).log(Level.SEVERE, null, ex);
