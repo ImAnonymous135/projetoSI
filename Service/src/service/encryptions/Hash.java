@@ -5,7 +5,12 @@
  */
 package service.encryptions;
 
-import service.test;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
@@ -16,17 +21,23 @@ import java.util.logging.Logger;
  * @author joaob
  */
 public final class Hash {
-    
-     public static String jsonHash(String json) {
+
+    public static byte[] getFileHash(String path) {
 
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-            messageDigest.update(json.getBytes());
-            String stringHash = new String(messageDigest.digest());
-            return stringHash;
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            InputStream is = Files.newInputStream(Paths.get(path));
+            DigestInputStream dis = new DigestInputStream(is, md);
+
+            while (dis.read() != -1) {
+            }
+
+            return md.digest();
+        } catch (IOException ex) {
+            Logger.getLogger(Hash.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Hash.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return "Erro ao fazer hash.";
+        return null;
     }
 }

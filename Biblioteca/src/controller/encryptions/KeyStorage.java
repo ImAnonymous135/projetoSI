@@ -17,7 +17,6 @@ import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

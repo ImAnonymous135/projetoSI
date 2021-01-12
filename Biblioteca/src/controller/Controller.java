@@ -8,23 +8,13 @@ package controller;
 import controller.encryptions.CifraHibrida;
 import controller.encryptions.AssinaturaDigital;
 import com.google.gson.Gson;
-import controller.encryptions.Hash;
 import controller.encryptions.KeyStorage;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyPair;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Scanner;
-import javax.crypto.NoSuchPaddingException;
 
 /**
  *

@@ -5,6 +5,7 @@
  */
 package service;
 
+import service.encryptions.Hash;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 
@@ -70,8 +71,8 @@ public class License {
 
         this.appName = appName;
         this.appVersion = appVersion;
-        //this.fileHash = fileHash;
-        //this.librabryFileHash = librabryFileHash;
+        this.fileHash = getAppHash();
+        this.librabryFileHash = getLibHash();
 
         this.systemCpuName = getCpuName();
         this.systemCpuId = System.getenv("PROCESSOR_IDENTIFIER");
@@ -79,12 +80,20 @@ public class License {
         this.systemOsId = getOsSerial();
         this.systemHardDrivesId = getSystemIdList();
         this.startDate = getDate();
-        //this.expirationDate = getExpDate(12);
+        this.expirationDate = getExpDate(-1);
     }
 
     //---------------------------------
     //Private methods
     //---------------------------------
+    private String getLibHash() {
+        return new String(Hash.getFileHash("dist/lib/Biblioteca.jar"));
+    }
+
+    private String getAppHash() {
+        return new String(Hash.getFileHash("dist/Aplicacao.jar"));
+    }
+
     private String[] setUser() throws IOException, NoSuchAlgorithmException, CertificateException {
         Provider prov = Security.getProvider("SunPKCS11-CartaoCidadao");
 

@@ -8,6 +8,8 @@ package service;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import service.encryptions.Hash;
 
 /**
  *
@@ -19,7 +21,7 @@ public class test {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        Controller c = new Controller();
-        c.isLicenseLegit("aprovar/license.txt");
+        //Controller c = new Controller();
+        //c.isLicenseLegit("aprovar/license.txt");
     }
 }
