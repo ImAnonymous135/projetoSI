@@ -19,8 +19,7 @@ public class test {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        Path paths = Paths.get("aprovar");
-        Files.createDirectories(paths);
-        
+        Controller c = new Controller();
+        c.isLicenseLegit("aprovar/license.txt");
     }
 }

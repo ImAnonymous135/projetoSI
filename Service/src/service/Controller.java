@@ -41,7 +41,7 @@ public class Controller {
     private KeyPair kpService;
 
     public String isLicenseLegit(String path) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, KeyStoreException, IOException, CertificateException, UnrecoverableKeyException, SignatureException,FileNotFoundException, Exception {
-
+        System.out.println("a");
         kpService = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
 
         CifraHibrida c = new CifraHibrida();

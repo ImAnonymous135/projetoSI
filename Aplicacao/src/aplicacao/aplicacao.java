@@ -38,12 +38,19 @@ public class aplicacao {
                     System.out.println("Qual o seu mail?");
                     String mail = sc.nextLine();
                     c = new Controller(nomeApp, versao);
-                    c.setMail(mail);
                     c.startRegistration();
                     break;
                 case "2":
-                    c.isRegistered();
-                    break;
+                    try {
+                    if (c.isRegistered()) {
+                        System.out.println("Esta registado!");
+                    } else {
+                        System.out.println("Nao esta registado!");
+                    }
+                } catch (Exception ex) {
+                    System.out.println("Problema no ficheiro");
+                }
+                break;
                 case "3":
                     c.showLicenseInfo();
                     break;

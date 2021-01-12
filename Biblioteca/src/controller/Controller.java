@@ -15,12 +15,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyPair;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Scanner;
 import javax.crypto.NoSuchPaddingException;
 
@@ -42,7 +44,7 @@ public class Controller {
         kpService = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
     }
 
-    public boolean isRegistered() throws Exception {
+    public boolean isRegistered() throws FileNotFoundException,Exception {
         CifraHibrida c = new CifraHibrida();
         Gson gson = new Gson();
         String json = gson.toJson(c.decriptar("licenca/license.txt", (Key) kpApp.getPrivate()));
@@ -51,10 +53,8 @@ public class Controller {
         json = json.replaceAll("\\\\", "");
         Data data = gson.fromJson(json, Data.class);
         License license = data.getLicence();
-        System.out.println("b");
         if (Certificado.verificar(data.getLicence().getUserCertificate())) {
             if (AssinaturaDigital.verificar(data.getSignature(), gson.toJson(data.getLicence()))) {
-                System.out.println("Licença Aprovada!!");
                 License license2 = new License("compare", "compare", "compare");
                 if (isDataValid(license) + isUserValid(license, license2) + isSystemValid(license, license2) >= 3) {
                     return false;
@@ -145,12 +145,13 @@ public class Controller {
         int isValid = 0;
 
         if (!licenseStored.getUserId().equals(licenseCurrent.getUserId())) {
+            System.out.println("a");
             return isValid += 4;
         }
         if (!licenseStored.getUserName().equals(licenseCurrent.getUserName())) {
             return isValid += 4;
         }
-        if (!licenseStored.getUserCertificate().equals(licenseCurrent.getUserCertificate())) {
+        if (!Arrays.equals(licenseCurrent.getUserCertificate(), licenseStored.getUserCertificate())) {
             return isValid += 4;
         }
         return isValid;

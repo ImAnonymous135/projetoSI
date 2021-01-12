@@ -89,7 +89,7 @@ public class CifraHibrida {
 
     }
 
-    public String decriptar(String path, Key pvtKey) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, Exception {
+    public String decriptar(String path, Key pvtKey) throws FileNotFoundException,IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, Exception {
         File inFile = new File(path);
         String[] contents = extractDataElements(inFile);
 
@@ -105,7 +105,7 @@ public class CifraHibrida {
         return new String(messageByte, StandardCharsets.UTF_8);
     }
 
-    private static String[] extractDataElements(File file) {
+    private static String[] extractDataElements(File file) throws FileNotFoundException {
         String[] dataArr = null;
         FileReader reader;
         BufferedReader bufReader;
