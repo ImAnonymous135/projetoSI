@@ -30,7 +30,7 @@ public class KeyStorage {
     public static KeyPair getKeys(String path, String password, String alias) {
 
         try {
-            FileInputStream is = new FileInputStream(path);
+            FileInputStream is = new FileInputStream("keys"+path);
             
             KeyStore keystore = KeyStore.getInstance("jks");
             keystore.load(is, password.toCharArray());
