@@ -12,6 +12,9 @@ import controller.encryptions.KeyStorage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -36,6 +39,8 @@ public class test {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException, Exception {
+        Files.createDirectories(Paths.get("aprovar"));
+        Files.createDirectories(Paths.get("licenca"));
         Controller c = new Controller("jo","se");
         //c.startRegistration();
         //c.showLicenseInfo();
