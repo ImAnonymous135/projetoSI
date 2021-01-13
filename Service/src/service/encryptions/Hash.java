@@ -22,6 +22,17 @@ import java.util.logging.Logger;
  */
 public final class Hash {
 
+    public static byte[] getStringHash(String input) {
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            return md.digest(input.getBytes());
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(Hash.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     public static byte[] getFileHash(String path) {
 
         try {

@@ -7,6 +7,7 @@ package aplicacao;
 
 import controller.Controller;
 import controller.License;
+import controller.encryptions.KeyStorage;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -17,7 +18,10 @@ import java.util.Scanner;
 public class aplicacao {
 
     public static void main(String[] args) throws IOException, Exception {
-        Scanner sc = new Scanner(System.in);
+               
+        System.out.println(KeyStorage.getPublicKey("123456", "servicePublic.txt"));
+        
+        /*Scanner sc = new Scanner(System.in);
         System.out.println("Hello");
 
         System.out.println("Qual o nome da app?");
@@ -56,6 +60,6 @@ public class aplicacao {
                 default:
                     System.out.println("Opção invalida.");
             }
-        }
+        }*/
     }
 }

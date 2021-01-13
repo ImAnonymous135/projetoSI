@@ -25,13 +25,11 @@ public class Controller {
     private String nomeApp;
     private String versao;
     private KeyPair kpApp;
-    private KeyPair kpService;
     
     public Controller(String nomeApp, String versao) {
         this.nomeApp = nomeApp;
         this.versao = versao;
         kpApp = KeyStorage.getKeys("appKeys.jks", "123456", "chave");
-        kpService = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
     }
 
     public boolean isRegistered() throws FileNotFoundException,Exception {
@@ -68,7 +66,7 @@ public class Controller {
         String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), null));
         json = json.replaceAll("\\\\", "");
 
-        c.encriptar(json, (Key) kpService.getPublic());
+        c.encriptar(json, (Key) KeyStorage.getPublicKey("123456", "serviceKey.txt"));
 
         return false;
     }

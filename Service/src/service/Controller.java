@@ -30,7 +30,6 @@ import service.encryptions.KeyStorage;
  */
 public class Controller {
 
-    private KeyPair kpApp;
     private KeyPair kpService;
 
     public String isLicenseLegit(String path) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, KeyStoreException, IOException, CertificateException, UnrecoverableKeyException, SignatureException, FileNotFoundException, Exception {
@@ -59,13 +58,12 @@ public class Controller {
     }
 
     private void criarFicheiro(String path, License license) throws Exception {
-        kpApp = KeyStorage.getKeys("appKeys.jks", "123456", "chave");
 
         CifraHibrida c = new CifraHibrida();
         Gson gson = new Gson();
         String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), null));
         json = json.replaceAll("\\\\", "");
 
-        c.encriptar(path, json, (Key) kpApp.getPublic());
+        c.encriptar(path, json, (Key) KeyStorage.getPublicKey("123456", "appKeys.txt"));
     }
 }
