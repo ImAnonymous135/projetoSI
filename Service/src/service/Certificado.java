@@ -42,6 +42,7 @@ import java.util.Enumeration;
  */
 public class Certificado {
 
+    //codigo tirado do guiao Assinatura Digital com o Cartão de Cidadão do elearning
     public static byte[] getCertificado() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
         Provider prov = Security.getProvider("SunPKCS11-CartaoCidadao");
         KeyStore ks;
@@ -53,6 +54,7 @@ public class Certificado {
         return t.getEncoded();
     }
 
+    //codigo tirado do guiao Validação de Certificados em Java no elearning
     public static boolean verificar(byte[] certificado) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, KeyStoreException, IOException, CertificateException {
         Provider prov = Security.getProvider("SunPKCS11-CartaoCidadao");
 

@@ -41,7 +41,7 @@ public class CifraHibrida {
     private Assimetrica assim = new Assimetrica();
     private License l;
 
-        
+    //metodo retirado de https://dzone.com/articles/security-implementation-of-hybrid-encryption-using no entanto alterado    
     public void encriptar(String path,String texto, Key publicKey) throws FileNotFoundException, IOException, Exception {
 
         // Secret Key Generation
@@ -96,6 +96,7 @@ public class CifraHibrida {
 
     }
 
+    //metodo retirado de https://dzone.com/articles/security-implementation-of-hybrid-encryption-using no entanto alterado
     public String decriptar(String path, Key pvtKey) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, Exception {
         File inFile = new File(path);
         String[] contents = extractDataElements(inFile);
@@ -113,6 +114,7 @@ public class CifraHibrida {
         return new String(messageByte, StandardCharsets.UTF_8);
     }
 
+    //metodo retirado de https://dzone.com/articles/security-implementation-of-hybrid-encryption-using no entanto alterado
     private static String[] extractDataElements(File file) {
         String[] dataArr = null;
         FileReader reader;

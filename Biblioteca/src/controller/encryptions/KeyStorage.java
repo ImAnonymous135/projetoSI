@@ -41,7 +41,6 @@ public class KeyStorage {
             String storedPass = (String) oi.readObject();
             
             if (storedPass.equals(Base64.getEncoder().encodeToString(Hash.getStringHash(pass)))) {
-                System.out.println("Right password");
                 Key k = (Key) oi.readObject();
                 return k;
             }

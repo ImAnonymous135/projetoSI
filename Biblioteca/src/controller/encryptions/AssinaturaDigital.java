@@ -51,8 +51,9 @@ public class AssinaturaDigital {
     }
     
     public static boolean verificar(byte[] hash, String info) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, InvalidKeyException, SignatureException {
-        KeyPair kpService = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
-        PublicKey pk = kpService.getPublic();
+        
+        PublicKey pk = (PublicKey) KeyStorage.getPublicKey("123456", "servicePublic.txt");
+        
         
         Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initVerify(pk);

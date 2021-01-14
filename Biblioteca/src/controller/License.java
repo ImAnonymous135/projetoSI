@@ -88,12 +88,10 @@ public class License {
     //Private methods
     //---------------------------------
     private byte[] getLibHash() {
-        System.out.println(Arrays.toString(Hash.getFileHash("dist/lib/Biblioteca.jar")));
         return Hash.getFileHash("dist/lib/Biblioteca.jar");
     }
 
     private byte[] getAppHash() {
-        System.out.println(Arrays.toString(Hash.getFileHash("dist/Aplicacao.jar")));
         return Hash.getFileHash("dist/Aplicacao.jar");
     }
 

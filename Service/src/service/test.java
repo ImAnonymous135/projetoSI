@@ -5,16 +5,6 @@
  */
 package service;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PublicKey;
-import java.util.Arrays;
-import java.util.Base64;
-import service.encryptions.Hash;
-import service.encryptions.KeyStorage;
 
 /**
  *
@@ -26,12 +16,12 @@ public class test {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        //Controller c = new Controller();
-        //System.out.println(c.isLicenseLegit("aprovar/license.txt"));
+        Controller c = new Controller();
+        System.out.println(c.isLicenseLegit("aprovar/license.txt"));
         
         
-        //KeyStorage.storePublicKey(KeyStorage.getKeys("serviceKeys.jks", "123456", "chave").getPublic(),"123456","keys/appPublic.txt");
+        //KeyStorage.storePublicKey(KeyStorage.getKeys("appKeys.jks", "123456", "chave").getPublic(),"123456","keys/appPublic.txt");
        
-        System.out.println(KeyStorage.getPublicKey("123456", "appPublic.txt"));
+        //System.out.println(KeyStorage.getPublicKey("123456", "appPublic.txt"));
     }
 }

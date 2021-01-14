@@ -43,8 +43,8 @@ public class Controller {
         License license = data.getLicence();
         if (Certificado.verificar(data.getLicence().getUserCertificate())) {
             if (AssinaturaDigital.verificar(data.getSignature(), gson.toJson(data.getLicence()))) {
-                License license2 = new License("compare", "compare", "compare");
-                if (isDataValid(license) + isUserValid(license, license2) + isSystemValid(license, license2) >= 3) {
+                License license2 = new License(license.getUserMail(), this.nomeApp, this.versao);
+                if (isDataValid(license) + isUserValid(license, license2) + isSystemValid(license, license2) + isAppValid(license, license2) >= 3) {
                     return false;
                 }
             } else {
@@ -66,7 +66,7 @@ public class Controller {
         String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), null));
         json = json.replaceAll("\\\\", "");
 
-        c.encriptar(json, (Key) KeyStorage.getPublicKey("123456", "serviceKey.txt"));
+        c.encriptar(json, (Key) KeyStorage.getPublicKey("123456", "servicePublic.txt"));
 
         return false;
     }
@@ -85,8 +85,6 @@ public class Controller {
         System.out.println("Informação sobre aplicação");
         System.out.println("Nome da aplicação: " + data.getLicence().getAppName());
         System.out.println("Versão: " + data.getLicence().getAppVersion());
-        System.out.println("Hash da aplicação: " + data.getLicence().getFileHash());
-        System.out.println("Hash da biblioteca: " + data.getLicence().getLibrabryFileHash());
         System.out.println("----------------------------------------------------------------------------------------");
 
         System.out.println("Informação sobre o utilizador");
@@ -172,6 +170,28 @@ public class Controller {
             return isValid;
         }
         if (!licenseStored.getSystemHardDrivesId().equals(licenseCurrent.getSystemHardDrivesId())) {
+            isValid++;
+        }
+        return isValid;
+    }
+    
+    private int isAppValid(License licenseStored, License licenseCurrent) {
+
+        int isValid = 0;
+
+        if (!licenseStored.getAppName().equals(licenseCurrent.getAppName())) {
+            isValid++;
+        }
+        if (!licenseStored.getAppVersion().equals(licenseCurrent.getAppVersion())) {
+            isValid++;
+        }
+        if (!Arrays.equals(licenseCurrent.getFileHash(), licenseStored.getFileHash())) {
+            isValid++;
+        }
+        if (isValid >= 3) {
+            return isValid;
+        }
+        if (!Arrays.equals(licenseCurrent.getLibrabryFileHash(), licenseStored.getLibrabryFileHash())) {
             isValid++;
         }
         return isValid;

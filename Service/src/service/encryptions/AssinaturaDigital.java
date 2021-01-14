@@ -52,6 +52,7 @@ public class AssinaturaDigital {
         KeyStore ks = KeyStore.getInstance("PKCS11", ccProvider);
         ks.load(null, null);
         
+        //as 3 linhas abaixo foram retiradas do https://stackoverflow.com/questions/3389143/generate-x509certificate-from-byte
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
         InputStream in = new ByteArrayInputStream(certificado);
         Certificate certif = certFactory.generateCertificate(in);

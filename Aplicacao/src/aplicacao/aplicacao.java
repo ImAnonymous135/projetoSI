@@ -9,6 +9,7 @@ import controller.Controller;
 import controller.License;
 import controller.encryptions.KeyStorage;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Scanner;
 
 /**
@@ -16,20 +17,10 @@ import java.util.Scanner;
  * @author josea
  */
 public class aplicacao {
-
     public static void main(String[] args) throws IOException, Exception {
-               
-        System.out.println(KeyStorage.getPublicKey("123456", "servicePublic.txt"));
-        
-        /*Scanner sc = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
         System.out.println("Hello");
-
-        System.out.println("Qual o nome da app?");
-        String nomeApp = sc.nextLine();
-        System.out.println("Qual a versão?");
-        String versao = sc.nextLine();
-        Controller c = new Controller(nomeApp, versao);
-
+        Controller c = new Controller("aplicacao", "1");
         while (true) {
             System.out.println("Escolha uma opção:");
             System.out.println("1 - Criar pedido de licença.");
@@ -42,24 +33,25 @@ public class aplicacao {
                     c.startRegistration();
                     break;
                 case "2":
-                    try {
                     if (c.isRegistered()) {
                         System.out.println("Esta registado!");
                     } else {
                         System.out.println("Nao esta registado!");
                     }
-                } catch (Exception ex) {
-                    System.out.println("Problema no ficheiro");
-                }
-                break;
+                    break;
                 case "3":
-                    c.showLicenseInfo();
+                    if (c.isRegistered()) {
+                        c.showLicenseInfo();
+                    } else {
+                        System.out.println("Nao esta registado!");
+                    }
                     break;
                 case "0":
                     return;
                 default:
                     System.out.println("Opção invalida.");
             }
-        }*/
+        }
     }
+
 }
