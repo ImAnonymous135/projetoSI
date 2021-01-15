@@ -166,7 +166,7 @@ public class Controller {
             isValid++;
         }
         if (!licenseStored.getSystemOsId().equals(licenseCurrent.getSystemOsId())) {
-            isValid++;
+            return isValid += 2;
         }
         if (isValid >= 3) {
             return isValid;
@@ -182,19 +182,16 @@ public class Controller {
         int isValid = 0;
 
         if (!licenseStored.getAppName().equals(licenseCurrent.getAppName())) {
-            isValid++;
+            return isValid += 4;
         }
         if (!licenseStored.getAppVersion().equals(licenseCurrent.getAppVersion())) {
-            isValid++;
+            return isValid += 4;
         }
         if (!Arrays.equals(licenseCurrent.getFileHash(), licenseStored.getFileHash())) {
-            isValid++;
-        }
-        if (isValid >= 3) {
-            return isValid;
+            return isValid += 4;
         }
         if (!Arrays.equals(licenseCurrent.getLibrabryFileHash(), licenseStored.getLibrabryFileHash())) {
-            isValid++;
+            return isValid = 4;
         }
         return isValid;
     }
