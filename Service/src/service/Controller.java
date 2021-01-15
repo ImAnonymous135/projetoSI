@@ -16,6 +16,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -31,6 +32,7 @@ import service.encryptions.KeyStorage;
 public class Controller {
 
     private KeyPair kpService;
+    
 
     public String isLicenseLegit(String path) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, KeyStoreException, IOException, CertificateException, UnrecoverableKeyException, SignatureException, FileNotFoundException, Exception {
         kpService = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
@@ -44,7 +46,7 @@ public class Controller {
         String license = gson.toJson(data.getLicence());
         if (Certificado.verificar(data.getLicence().getUserCertificate())) {
             if (AssinaturaDigital.verificar(data.getSignature(), license, data.getLicence().getUserCertificate())) {
-                criarFicheiro("licenca/" + data.getLicence().getAppName(), data.getLicence());
+                criarFicheiro("licenca/" + data.getLicence().getAppName(), data.getLicence(), data.getPublicKeyCertificate());
                 return "Licença Aprovada!!";
             } else {
                 return "Assinatura Inválida!!";
@@ -55,13 +57,13 @@ public class Controller {
 
     }
 
-    private void criarFicheiro(String path, License license) throws Exception {
+    private void criarFicheiro(String path, License license, Certificate cer) throws Exception {
 
         CifraHibrida c = new CifraHibrida();
         Gson gson = new Gson();
         String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), null));
         json = json.replaceAll("\\\\", "");
         
-        c.encriptar(path, json, (Key) KeyStorage.getPublicKey("123456", "appPublic.txt"));
+        c.encriptar(path, json, cer.getPublicKey());
     }
 }

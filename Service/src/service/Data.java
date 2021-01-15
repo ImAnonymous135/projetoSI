@@ -5,20 +5,22 @@
  */
 package service;
 
+import java.security.cert.Certificate;
+
 /**
  *
  * @author josea
  */
 public class Data {
-    
+
     private License licence;
     private byte[] signature;
-    private byte[] certificate;
+    private Certificate publicKeyCertificate;
 
-    public Data(License licence, byte[] signature, byte[] certificate) {
+    public Data(License licence, byte[] signature, Certificate certificate) {
         this.licence = licence;
         this.signature = signature;
-        this.certificate = certificate;
+        this.publicKeyCertificate = certificate;
     }
 
     public License getLicence() {
@@ -29,9 +31,7 @@ public class Data {
         return signature;
     }
 
-    public byte[] getCertificate() {
-        return certificate;
+    public Certificate getPublicKeyCertificate() {
+        return publicKeyCertificate;
     }
-    
-    
 }

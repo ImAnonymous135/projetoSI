@@ -52,7 +52,7 @@ public class AssinaturaDigital {
     
     public static boolean verificar(byte[] hash, String info) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, InvalidKeyException, SignatureException {
         
-        PublicKey pk = (PublicKey) KeyStorage.getPublicKey("123456", "servicePublic.txt");
+        PublicKey pk = KeyStorage.getPublicKeyCertificate("ServicePublicKey.cer").getPublicKey();
         
         
         Signature signature = Signature.getInstance("SHA256withRSA");

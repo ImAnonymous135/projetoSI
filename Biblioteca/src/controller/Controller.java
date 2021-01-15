@@ -12,6 +12,7 @@ import controller.encryptions.KeyStorage;
 import java.io.FileNotFoundException;
 import java.security.Key;
 import java.security.KeyPair;
+import java.security.cert.Certificate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -61,12 +62,13 @@ public class Controller {
 
         CifraHibrida c = new CifraHibrida();
         Gson gson = new Gson();
+        Certificate certificate = KeyStorage.getPublicKeyCertificate("ServicePublicKey.cer");
         System.out.println("Digite o seu email: ");
         License license = new License(new Scanner(System.in).nextLine(), this.nomeApp, this.versao);
-        String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), null));
+        String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), KeyStorage.getPublicKeyCertificateFromStorage("appKeys.jks", "123456", "chave")));
         json = json.replaceAll("\\\\", "");
 
-        c.encriptar(json, (Key) KeyStorage.getPublicKey("123456", "servicePublic.txt"));
+        c.encriptar(json, (Key) certificate.getPublicKey());
 
         return false;
     }
