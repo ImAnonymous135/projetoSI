@@ -15,9 +15,9 @@ public class Data {
 
     private License licence;
     private byte[] signature;
-    private Certificate publicKeyCertificate;
+    private byte[] publicKeyCertificate;
 
-    public Data(License licence, byte[] signature, Certificate certificate) {
+    public Data(License licence, byte[] signature, byte[] certificate) {
         this.licence = licence;
         this.signature = signature;
         this.publicKeyCertificate = certificate;
@@ -31,7 +31,7 @@ public class Data {
         return signature;
     }
 
-    public Certificate getPublicKeyCertificate() {
+    public byte[] getPublicKeyCertificate() {
         return publicKeyCertificate;
     }
 }

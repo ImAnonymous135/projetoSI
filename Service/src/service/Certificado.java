@@ -69,63 +69,51 @@ public class Certificado {
 
         InputStream in = new ByteArrayInputStream(certificado);
 
-        // generate certificate (according to Java API)
         Certificate certif = certFactory.generateCertificate(in);
 
         PKIXParameters par = new PKIXParameters(ks);
         for (TrustAnchor ta : par.getTrustAnchors()) {
             X509Certificate c = ta.getTrustedCert();
-            //System.out.println(c.getSubjectDN().getName());
         }
 
-        //defines the end-user certificate as a selector
         X509CertSelector cs = new X509CertSelector();
         cs.setCertificate((X509Certificate) certif);
-//Create an object to build the certification path
         CertPathBuilder cpb = CertPathBuilder.getInstance("PKIX");
-//Define the parameters to buil the certification path and provide the Trust anchor
-//certificates (trustAnchors) and the end user certificate (cs)
         PKIXBuilderParameters pkixBParams
                 = new PKIXBuilderParameters(par.getTrustAnchors(), cs);
-        pkixBParams.setRevocationEnabled(false); //No revocation check
-//Provide the intermediate certificates (iCerts)
+        pkixBParams.setRevocationEnabled(false);
         CollectionCertStoreParameters ccsp
                 = new CollectionCertStoreParameters(Arrays.asList());
         CertStore store = CertStore.getInstance("Collection", ccsp);
         pkixBParams.addCertStore(store);
-//Build the certification path
         CertPath cp = null;
         try {
             CertPathBuilderResult cpbr = cpb.build(pkixBParams);
             cp = cpbr.getCertPath();
-            //System.out.println("Certification path built with success!");
         } catch (CertPathBuilderException ex) {
-            //System.out.println("It was not possible to build a certification path!");
         }
 
         PKIXParameters pkixParams = new PKIXParameters(par.getTrustAnchors());
-//Class that performs the certification path validation
         CertPathValidator cpv = CertPathValidator.getInstance("PKIX");
-//Disables the previous mechanism for revocation check (pre Java8)
         pkixParams.setRevocationEnabled(false);
-//Enable OCSP verification
         Security.setProperty("ocsp.enable", "true");
-//Instantiate a PKIXRevocationChecker class
         PKIXRevocationChecker rc = (PKIXRevocationChecker) cpv.getRevocationChecker();
-//Configure to validate all certificates in chain using only OCSP
         rc.setOptions(EnumSet.of(PKIXRevocationChecker.Option.SOFT_FAIL,
                 PKIXRevocationChecker.Option.NO_FALLBACK));
         PKIXCertPathValidatorResult result = null;
 
         try {
-//Do the velidation
             result = (PKIXCertPathValidatorResult) cpv.validate(cp, pkixParams);
-            //System.out.println("Certificado Válido");
-            //System.out.println("Issuer of trust anchor certificate: "
-            //        + result.getTrustAnchor().getTrustedCert().getIssuerDN().getName());
             return true;
         } catch (CertPathValidatorException cpve) {
             return false;
         }
+    }
+
+    public static Certificate byteToCertificate(byte[] cer) throws CertificateException {
+        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+        InputStream in = new ByteArrayInputStream(cer);
+        Certificate certif = certFactory.generateCertificate(in);
+        return certif;
     }
 }

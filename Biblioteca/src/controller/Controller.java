@@ -62,10 +62,10 @@ public class Controller {
 
         CifraHibrida c = new CifraHibrida();
         Gson gson = new Gson();
-        Certificate certificate = KeyStorage.getPublicKeyCertificate("ServicePublicKey.cer");
+        Certificate certificate = KeyStorage.getPublicKeyCertificate("keys/ServicePublicKey.cer");
         System.out.println("Digite o seu email: ");
         License license = new License(new Scanner(System.in).nextLine(), this.nomeApp, this.versao);
-        String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), KeyStorage.getPublicKeyCertificateFromStorage("appKeys.jks", "123456", "chave")));
+        String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), KeyStorage.getPublicKeyCertificateFromStorage("appKeys.jks", "123456", "chave").getEncoded()));
         json = json.replaceAll("\\\\", "");
 
         c.encriptar(json, (Key) certificate.getPublicKey());

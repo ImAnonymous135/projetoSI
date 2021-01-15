@@ -32,9 +32,8 @@ import service.encryptions.KeyStorage;
 public class Controller {
 
     private KeyPair kpService;
-    
 
-    public String isLicenseLegit(String path) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, KeyStoreException, IOException, CertificateException, UnrecoverableKeyException, SignatureException, FileNotFoundException, Exception {
+    public Boolean isLicenseLegit(String path) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, KeyStoreException, IOException, CertificateException, UnrecoverableKeyException, SignatureException, FileNotFoundException, Exception {
         kpService = KeyStorage.getKeys("serviceKeys.jks", "123456", "chave");
 
         CifraHibrida c = new CifraHibrida();
@@ -47,23 +46,25 @@ public class Controller {
         if (Certificado.verificar(data.getLicence().getUserCertificate())) {
             if (AssinaturaDigital.verificar(data.getSignature(), license, data.getLicence().getUserCertificate())) {
                 criarFicheiro("licenca/" + data.getLicence().getAppName(), data.getLicence(), data.getPublicKeyCertificate());
-                return "Licença Aprovada!!";
+                System.out.println("Licença Aprovada!!");
+                return true;
             } else {
-                return "Assinatura Inválida!!";
+                System.out.println("Assinatura Inválida!!");
+                return false;
             }
         } else {
-            return "Certificado Invalido!!";
+            System.out.println("Certificado da chave publica do utilizador invalido!!");
+            return false;
         }
-
     }
 
-    private void criarFicheiro(String path, License license, Certificate cer) throws Exception {
+    private void criarFicheiro(String path, License license, byte[] cer) throws Exception {
 
         CifraHibrida c = new CifraHibrida();
         Gson gson = new Gson();
         String json = gson.toJson(new Data(license, AssinaturaDigital.sign(gson.toJson(license)), null));
         json = json.replaceAll("\\\\", "");
-        
-        c.encriptar(path, json, cer.getPublicKey());
+
+        c.encriptar(path, json, (Key) Certificado.byteToCertificate(cer).getPublicKey());
     }
 }

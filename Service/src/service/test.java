@@ -18,7 +18,7 @@ public class test {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        //Controller c = new Controller();
-        //System.out.println(c.isLicenseLegit("aprovar/license.txt"));
+        Controller c = new Controller();
+        System.out.println(c.isLicenseLegit("aprovar/license.txt"));
     }
 }
